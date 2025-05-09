@@ -1,0 +1,9 @@
+# robots.txt for exnettraders.com
+
+User-agent: *
+Disallow: /auth/
+Disallow: /admin/
+Disallow: /dashboard/
+Allow: /locale/
+
+Sitemap: https://www.exnettraders.com/sitemap.xml

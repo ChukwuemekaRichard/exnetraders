@@ -1,0 +1,305 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "services": "Services",
+    "about": "À Propos",
+    "testimonials": "Témoignages",
+    "contact": "Contact",
+    "plans": "Plans d'Investissement",
+    "login": "Connexion",
+    "signup": "S'inscrire"
+  },
+  "hero": {
+    "title": "Des Profits Bâtis sur la Logique",
+    "subtitle": "Solutions d'investissement expertes pour la croissance et la stabilité",
+    "cta": "Commencer à Investir"
+  },
+  "features": {
+    "title": "Nos Services d'Investissement",
+    "subtitle": "Stratégies personnalisées pour atteindre vos objectifs financiers",
+    "item1": {
+      "title": "Trading de Cryptomonnaies",
+      "description": "Stratégies expertes de trading de cryptomonnaies avec analyse de marché en temps réel"
+    },
+    "item2": {
+      "title": "Investissement Forex",
+      "description": "Trading professionnel de paires de devises avec systèmes de gestion des risques"
+    },
+    "item3": {
+      "title": "Portefeuille d'Actions",
+      "description": "Investissements diversifiés en actions guidés par des courtiers expérimentés"
+    },
+    "item4": {
+      "title": "Planification de la Retraite",
+      "description": "Stratégies d'investissement à long terme pour une retraite sécurisée"
+    }
+  },
+  "testimonial": {
+    "title": "Témoignages de Clients",
+    "subtitle": "Écoutez les investisseurs qui font confiance à notre expertise"
+  },
+  "cta": {
+    "title": "Prêt à Développer Vos Investissements ?",
+    "subtitle": "Rejoignez des milliers de clients satisfaits qui construisent leur patrimoine",
+    "button": "Commencer Aujourd'hui"
+  },
+  "team": {
+    "title": "Notre Équipe d'Experts",
+    "subtitle": "Chez exnettraders, nos traders expérimentés et professionnels de l'investissement travaillent ensemble pour offrir des résultats exceptionnels à nos clients. Avec des décennies d'expérience combinée sur les marchés mondiaux, notre équipe analyse les opportunités et gère les risques pour maximiser votre potentiel d'investissement.",
+    "established": "Établi depuis 2017",
+    "years": "années d'expérience",
+    "roles": {
+      "director": "Directeur des Investissements",
+      "investment": "Stratège Senior en Investissement",
+      "analyst": "Analyste de Marché",
+      "risk": "Spécialiste en Gestion des Risques"
+    },
+    "bios": {
+      "mark": "Mark apporte une vaste expérience des principales institutions financières avec une expertise en gestion de portefeuille et analyse de marché. Sa vision stratégique guide notre approche d'investissement.",
+      "james": "James se spécialise dans l'identification d'opportunités d'investissement à haute valeur à travers diverses classes d'actifs. Son approche analytique a constamment généré de solides rendements pour nos clients.",
+      "angel": "Angel excelle dans l'analyse technique et les prévisions de marché. Ses connaissances des tendances du marché aident à façonner nos stratégies de trading et décisions d'investissement.",
+      "musa": "L'expérience de Musa en évaluation des risques financiers garantit que nos stratégies d'investissement équilibrent opportunité et sécurité. Son approche méthodique protège les actifs des clients tout en maximisant le potentiel de croissance."
+    },
+    "collective": {
+      "title": "Expertise Collective",
+      "description": "Notre équipe combine diverses expériences financières et spécialités pour fournir des solutions d'investissement complètes. En travaillant en collaboration, nous analysons les conditions du marché, identifions les opportunités et mettons en œuvre des stratégies qui offrent des résultats constants."
+    },
+    "expertise": [
+      "Plus de 45 ans d'expérience combinée sur le marché",
+      "Connaissance spécialisée à travers multiples classes d'actifs",
+      "Historique prouvé de performance à travers divers cycles de marché"
+    ],
+    "join": {
+      "title": "Rejoignez Notre Communauté d'Investissement",
+      "description": "Bénéficiez de l'expertise de notre équipe et rejoignez des milliers d'investisseurs satisfaits dans le monde entier.",
+      "cta": "Contactez-Nous Aujourd'hui"
+    }
+  },
+  "marketTrends": {
+    "title": "Notre Performance sur le Marché",
+    "subtitle": "exnettraders a constamment surpassé les principales cryptomonnaies grâce à des stratégies de trading et des analyses de marché",
+    "chartTitle": "Comparaison de Croissance (6 Derniers Mois)",
+    "achievementsTitle": "Réalisations Récentes sur le Marché"
+  },
+  "trust": {
+    "title": "Pourquoi Faire Confiance à exnettraders",
+    "subtitle": "Nous avons bâti notre réputation sur la transparence, la sécurité et des rendements constants pour nos investisseurs",
+    "security": {
+      "title": "Sécurité de Niveau Bancaire",
+      "description": "Nous mettons en œuvre un cryptage de niveau militaire et une authentification à plusieurs facteurs pour sécuriser vos investissements et vos données personnelles"
+    },
+    "transparency": {
+      "title": "Transparence Totale",
+      "description": "Accédez à des rapports en temps réel sur vos investissements et nos activités de trading. Nous maintenons une communication ouverte sur les conditions du marché"
+    },
+    "performance": {
+      "title": "Historique Éprouvé",
+      "description": "Cinq années consécutives de rendements positifs, avec un taux de rétention de clients de 97% et un portefeuille croissant évalué à plus de 10 millions de dollars"
+    },
+    "regulation": {
+      "title": "Entièrement Réglementé et Conforme",
+      "description": "exnettraders opère sous une stricte surveillance réglementaire pour garantir que vos investissements sont gérés selon les normes d'intégrité les plus élevées"
+    }
+  },
+  "growth": {
+    "title": "Comment Votre Argent Va Croître",
+    "subtitle": "Découvrez le potentiel de votre investissement avec exnettraders grâce à nos stratégies de croissance composée",
+    "calculator": {
+      "title": "Calculateur de Croissance d'Investissement"
+    },
+    "strategy": {
+      "title": "Notre Stratégie de Croissance"
+    }
+  },
+  "plans": {
+    "title": "Plans d'Investissement",
+    "subtitle": "Choisissez le plan d'investissement qui correspond à vos objectifs financiers et à votre tolérance au risque",
+    "disclaimer": "* Rendements basés sur les performances historiques. Les performances passées ne préjugent pas des résultats futurs. L'investissement comporte des risques.",
+    "basic": {
+      "title": "Plan Basique",
+      "description": "Parfait pour les débutants souhaitant entrer sur le marché de l'investissement en cryptomonnaies"
+    },
+    "premium": {
+      "title": "Plan Premium",
+      "description": "Approche équilibrée pour les investisseurs expérimentés recherchant la croissance"
+    },
+    "elite": {
+      "title": "Plan Élite",
+      "description": "Stratégie agressive pour un potentiel de croissance maximal"
+    }
+  },
+  "globalReach": {
+    "title": "Notre Portée Mondiale",
+    "subtitle": "exnettraders connecte les investisseurs du monde entier aux opportunités de cryptomonnaies les plus prometteuses",
+    "americas": {
+      "title": "Amériques"
+    },
+    "europe": {
+      "title": "Europe & Afrique"
+    },
+    "asia": {
+      "title": "Asie-Pacifique"
+    }
+  },
+  "security": {
+    "title": "Votre Sécurité Est Notre Priorité",
+    "subtitle": "Nous employons des mesures de sécurité de pointe pour protéger vos investissements et vos informations personnelles",
+    "funds": {
+      "title": "Sécurité et Protection des Actifs"
+    }
+  },
+  "contact": {
+    "contactUs": "Contactez-nous",
+    "email": "E-mail",
+    "phone": "Téléphone",
+    "telegram": "Telegram",
+    "whatsapp": "WhatsApp",
+    "getInTouch": "Entrez en contact avec nous"
+  },
+  "footer": {
+    "company": "Entreprise",
+    "about": "À Propos de Nous",
+    "careers": "Carrières",
+    "news": "Actualités",
+    "legal": "Légal",
+    "terms": "Conditions d'Utilisation",
+    "privacy": "Politique de Confidentialité",
+    "disclaimer": "Avis d'Investissement",
+    "contact": "Contactez-Nous",
+    "support": "Centre d'Assistance",
+    "phone": "Assistance Téléphonique",
+    "email": "Envoyez-nous un Email",
+    "copyright": "© 2025 exnettraders. Tous droits réservés."
+  },
+  "services": {
+    "title": "Nos Services",
+    "crypto": {
+      "title": "Trading de Cryptomonnaies",
+      "description": "Accédez aux marchés des cryptomonnaies avec nos stratégies de trading personnalisées depuis 2017."
+    },
+    "forex": {
+      "title": "Trading Forex",
+      "description": "Négociez les paires de devises majeures, mineures et exotiques avec nos conseils d'experts."
+    },
+    "stocks": {
+      "title": "Investissements en Actions",
+      "description": "Diversifiez votre portefeuille avec des actions soigneusement sélectionnées sur les marchés mondiaux."
+    },
+    "advisory": {
+      "title": "Conseil Financier",
+      "description": "Conseils d'investissement personnalisés basés sur vos objectifs financiers et votre tolérance au risque."
+    },
+    "education": {
+      "title": "Formation au Trading",
+      "description": "Apprenez les techniques d'analyse de marché et les stratégies d'investissement de nos experts."
+    },
+    "analysis": {
+      "title": "Analyse de Marché",
+      "description": "Rapports réguliers et perspectives sur les tendances du marché pour éclairer vos décisions."
+    }
+  },
+  "about": {
+    "title": "À Propos de Valid Trades Investment",
+    "ourStory": {
+      "title": "Notre Histoire",
+      "part1": "Fondée en 2017, Valid Trades Investment a débuté avec une vision de rendre les marchés financiers accessibles aux investisseurs ordinaires grâce à des services d'investissement transparents et fiables.",
+      "part2": "Avec des années d'expérience sur les marchés financiers, notre équipe fournit des solutions d'investissement fiables qui aident nos clients à atteindre leurs objectifs financiers."
+    },
+    "mission": {
+      "title": "Notre Mission",
+      "description": "Fournir des opportunités d'investissement accessibles et transparentes qui aident nos clients à créer de la richesse grâce à une exposition diversifiée au marché."
+    },
+    "values": {
+      "title": "Nos Valeurs",
+      "description": "Intégrité, transparence, orientation client et amélioration continue guident tout ce que nous faisons chez Valid Trades Investment."
+    }
+  },
+  "testimonials": {
+    "title": "Ce Que Disent Nos Clients",
+    "items": [
+      {
+        "name": "Lara Mccarty",
+        "position": "Client depuis 2019",
+        "quote": "Valid Trades Investment m'a fourni des conseils clairs qui m'ont aidé à commencer mon parcours d'investissement. Leur approche équilibrée du risque a été inestimable."
+      },
+      {
+        "name": "Fredrick Morgan",
+        "position": "Cliente depuis 2020",
+        "quote": "Les ressources éducatives et les mises à jour régulières du marché ont considérablement amélioré ma compréhension des investissements. Très satisfaite de leur service."
+      },
+      {
+        "name": "Tommy Bill",
+        "position": "Client depuis 2018",
+        "quote": "Leurs stratégies de trading forex ont constamment donné des résultats dans ma zone de confort de risque. Excellente communication tout au long."
+      },
+      {
+        "name": "Rosemary N.",
+        "position": "Cliente depuis 2021",
+        "quote": "En tant qu'investisseuse débutante, j'apprécie leur patience et leurs explications claires. Leurs recommandations de portefeuille de cryptomonnaies ont bien performé."
+      }
+    ]
+  },
+  "tos": {
+    "title": "Conditions de Service",
+    "introduction": {
+      "title": "Introduction",
+      "description": "Ces conditions régissent votre utilisation des services de Valid Trades Investment. En accédant à nos services, vous acceptez ces conditions établies depuis 2017."
+    },
+    "services": {
+      "title": "Services",
+      "description": "Nous fournissons des services de conseil en investissement, d'analyse de marché et des ressources éducatives. Nos services ne garantissent pas de rendements spécifiques sur les investissements."
+    },
+    "risks": {
+      "title": "Risques d'Investissement",
+      "description": "Tous les investissements comportent des risques. Les performances passées ne préjugent pas des résultats futurs. Les clients doivent soigneusement considérer leurs objectifs d'investissement et leur tolérance au risque."
+    },
+    "contact": {
+      "title": "Coordonnées",
+      "description": "Pour toute question concernant ces conditions, veuillez contacter notre équipe de service client via le formulaire de contact sur notre site web."
+    }
+  },
+  "privacy": {
+    "title": "Politique de Confidentialité",
+    "collection": {
+      "title": "Collecte d'Informations",
+      "description": "Nous collectons les informations nécessaires pour fournir nos services, y compris les coordonnées, les informations financières et les préférences d'investissement."
+    },
+    "use": {
+      "title": "Utilisation des Informations",
+      "description": "Vos informations nous aident à fournir et améliorer nos services, traiter les transactions et communiquer des mises à jour importantes concernant vos investissements."
+    },
+    "security": {
+      "title": "Sécurité des Données",
+      "description": "Nous mettons en œuvre des mesures de sécurité appropriées pour protéger vos informations personnelles contre l'accès ou la divulgation non autorisés."
+    },
+    "contact": {
+      "title": "Coordonnées",
+      "description": "Si vous avez des questions sur nos pratiques de confidentialité, veuillez contacter notre équipe de confidentialité via le formulaire de contact sur notre site web."
+    }
+  },
+  "disclaimer": {
+    "title": "Avertissement sur les Risques",
+    "sections": [
+      {
+        "title": "Avertissement Général",
+        "content": "Le trading de cryptomonnaies, forex, actions et autres instruments financiers comporte un risque élevé et ne convient pas à tous les investisseurs."
+      },
+      {
+        "title": "Pas de Conseil en Investissement",
+        "content": "exnettraders ne fournit pas de conseils en investissement. Toutes les analyses de marché et le matériel éducatif sont à titre informatif uniquement."
+      },
+      {
+        "title": "Votre Responsabilité",
+        "content": [
+          "Vous assumez l'entière responsabilité d'évaluer les avantages et risques de tout trade.",
+          "Ne tradez pas avec de l'argent que vous ne pouvez pas vous permettre de perdre.",
+          "Les performances passées ne préjugent pas des résultats futurs."
+        ]
+      },
+      {
+        "title": "Conformité Juridique",
+        "content": "Il est de votre responsabilité de vous conformer aux lois locales avant d'utiliser nos services."
+      }
+    ]
+  }
+}
