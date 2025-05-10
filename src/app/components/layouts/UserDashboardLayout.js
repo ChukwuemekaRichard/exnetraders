@@ -20,6 +20,7 @@ import CustomLoader from "../CustomLoader";
 import ContactButton from "../ContactButton";
 
 const SERVER_NAME = process.env.NEXT_PUBLIC_SERVER_NAME;
+const CLIENT_NAME = process.env.NEXT_PUBLIC_CLIENT_NAME;
 
 export default function UserDashboardLayout({ children }) {
   const router = useRouter();
@@ -216,6 +217,12 @@ export default function UserDashboardLayout({ children }) {
                     {userName.charAt(0).toUpperCase()}
                   </div>
                   <span className="user-name-ext">{userName}</span>
+                   <div className="bg-white shadow rounded-lg">
+                      <h2>
+                        {CLIENT_NAME}
+                        {userData.referralCode}{" "}
+                      </h2>
+                    </div>
                 </div>
               </div>
             </div>
