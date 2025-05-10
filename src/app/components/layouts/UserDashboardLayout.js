@@ -20,6 +20,7 @@ import CustomLoader from "../CustomLoader";
 import ContactButton from "../ContactButton";
 
 const SERVER_NAME = process.env.NEXT_PUBLIC_SERVER_NAME;
+const CLIENT_NAME = process.env.NEXT_PUBLIC_CLIENT_NAME;
 
 export default function UserDashboardLayout({ children }) {
   const router = useRouter();
@@ -211,11 +212,17 @@ export default function UserDashboardLayout({ children }) {
             <div className="flex justify-between items-center px-12 sm:px-6 lg:px-8 h-16">
               <div className="flex items-center">
                 <div className="ml-3 relative">
-                  <div className="flex items-center">
+                  <div className="flex items-center space-x-4  " >
                     <div className="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center text-white">
                       {userName.charAt(0).toUpperCase()}
                     </div>
                     <span className="ml-2 text-gray-700">{userName}</span>
+                    <div className="bg-white shadow rounded-lg">
+                      <h2>
+                        {CLIENT_NAME}
+                        {userData.referralCode}{" "}
+                      </h2>
+                    </div>
                   </div>
                 </div>
               </div>

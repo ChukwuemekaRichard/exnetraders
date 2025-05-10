@@ -18,22 +18,52 @@ export default function Auth() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [referralCode, setReferralCode] = useState("");
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
+    referralCode: "",
   });
 
   useEffect(() => {
     // Extract token from URL
     const query = new URLSearchParams(window.location.search);
     const tokenFromQuery = query.get("token");
+    const refFromQuery = query.get("ref");
+    
     if (tokenFromQuery) {
       localStorage.setItem("token", tokenFromQuery);
       localStorage.setItem("userRole", "user");
       router.push("/dashboard");
+    }
+    
+    // Handle referral code from URL or local storage
+    if (refFromQuery) {
+      // If referral code is in URL, store it in local storage and use it
+      localStorage.setItem("referralCode", refFromQuery);
+      setReferralCode(refFromQuery);
+      setFormData(prevData => ({
+        ...prevData,
+        referralCode: refFromQuery
+      }));
+    } else {
+      // Check if referral code exists in local storage
+      const storedRefCode = localStorage.getItem("referralCode");
+      if (storedRefCode) {
+        setReferralCode(storedRefCode);
+        setFormData(prevData => ({
+          ...prevData,
+          referralCode: storedRefCode
+        }));
+      }
+    }
+    
+    // Automatically show registration form if there's a referral code
+    if (refFromQuery || localStorage.getItem("referralCode")) {
+      setIsLogin(false);
     }
   }, []);
 
@@ -105,18 +135,29 @@ export default function Auth() {
       const endpoint = isLogin
         ? `${SERVER_NAME}api/users/login`
         : `${SERVER_NAME}api/users/register`;
-      const response = await axios.post(endpoint, formData);
+      
+      // Only include referralCode for registration
+      const dataToSend = isLogin 
+        ? { email: formData.email, password: formData.password }
+        : { ...formData };
+        
+      const response = await axios.post(endpoint, dataToSend);
 
       // Handle successful authentication
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("userRole", "user");
+      
+      // Clear referral code from local storage after successful registration
+      if (!isLogin) {
+        localStorage.removeItem("referralCode");
+      }
 
       // Redirect to user dashboard
       router.push("/dashboard");
     } catch (err) {
       console.error("Auth error:", err);
       setError(
-        err.response.data.msg || "Authentication failed. Please try again."
+        err.response?.data?.msg || "Authentication failed. Please try again."
       );
     } finally {
       setLoading(false);
@@ -281,6 +322,29 @@ export default function Auth() {
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Referral Code Field - only for registration */}
+            {!isLogin && (
+              <div>
+                <label
+                  htmlFor="referralCode"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Referral Code (Optional)
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="referralCode"
+                    name="referralCode"
+                    type="text"
+                    value={formData.referralCode}
+                    onChange={handleChange}
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    placeholder="Enter referral code"
                   />
                 </div>
               </div>
