@@ -80,7 +80,7 @@ export default function AddUserModal({ isOpen, onClose, onUserAdded }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity duration-200">
+    <div className="fixed overlay-modal">
       <div
         ref={modalRef}
         className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl transform transition-all duration-200 scale-100"

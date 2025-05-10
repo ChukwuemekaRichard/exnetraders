@@ -200,7 +200,7 @@ export default function TeamSection({ dictionary }) {
               </p>
             </div>
             <a
-              href="https://t.me/exnettraderss"
+              href="https://t.me/exnettrades"
               className="btn-primary px-8 py-3 font-semibold rounded-lg inline-block"
             >
               {dictionary.team.join.cta}

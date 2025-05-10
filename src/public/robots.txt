@@ -1,4 +1,4 @@
-# robots.txt for exnettraders.com
+# robots.txt for exnettrade.com
 
 User-agent: *
 Disallow: /auth/
@@ -6,4 +6,4 @@ Disallow: /admin/
 Disallow: /dashboard/
 Allow: /locale/
 
-Sitemap: https://www.exnettraders.com/sitemap.xml
+Sitemap: https://www.exnettrade.com/sitemap.xml

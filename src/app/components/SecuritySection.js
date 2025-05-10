@@ -161,7 +161,7 @@ const SecuritySection = ({ dictionary }) => {
                 <h4 className="text-lg font-bold text-white">100% Security Record</h4>
               </div>
               <p className="mt-2 text-gray-300">
-                exnettraders has maintained a perfect security record with zero breaches or unauthorized access since our founding in 2017.
+                exnettrade has maintained a perfect security record with zero breaches or unauthorized access since our founding in 2017.
               </p>
             </div>
           </div>

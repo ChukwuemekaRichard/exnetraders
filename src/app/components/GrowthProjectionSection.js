@@ -51,7 +51,7 @@ const GrowthProjectionSection = ({ dictionary }) => {
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
             {dictionary.growth.subtitle || 
-              "See the potential of your investment with exnettraders through our compound growth strategies."}
+              "See the potential of your investment with exnettrade through our compound growth strategies."}
           </p>
         </div>
         

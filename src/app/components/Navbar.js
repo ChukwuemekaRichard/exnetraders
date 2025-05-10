@@ -65,7 +65,7 @@ export default function Navbar({ dictionary, locale }) {
                 />
               </div>
               <span className="ml-3 text-xl font-semibold bg-gradient-to-r from-gray-200 to-gray-300 bg-clip-text text-transparent">
-                VTI
+                exnettrade
               </span>
             </Link>
           </motion.div>
@@ -105,7 +105,7 @@ export default function Navbar({ dictionary, locale }) {
             <div className="mx-2 h-6 w-px bg-gray-700/50" />
 
             <Link
-              href="https://t.me/exnettraderss"
+              href="https://t.me/exnettrades"
               className="relative px-4 py-2.5 group overflow-hidden rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-sm font-medium text-white"
             >
               <span className="relative z-10 flex items-center">
@@ -158,7 +158,7 @@ export default function Navbar({ dictionary, locale }) {
                     label: dictionary.nav.testimonials,
                   },
                   {
-                    href: `https://t.me/exnettraderss`,
+                    href: `https://t.me/exnettrades`,
                     label: dictionary.nav.contact,
                   },
                 ].map((item, index) => (

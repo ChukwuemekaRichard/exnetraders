@@ -14,7 +14,7 @@ const MarketTrendsSection = ({ dictionary }) => {
           </h2>
           <p className="text-lg text-gray-300 max-w-3xl mx-auto">
             {dictionary.marketTrends.subtitle ||
-              "exnettraders has consistently outperformed major cryptocurrencies through strategic trading and market analysis."}
+              "exnettrade has consistently outperformed major cryptocurrencies through strategic trading and market analysis."}
           </p>
         </div>
 

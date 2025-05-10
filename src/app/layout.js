@@ -6,25 +6,25 @@ import { UserProvider } from "./contexts/UserContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "exnettraders - Profits Built on Logic",
-  description: "Join exnettraders for secure, professional investment solutions in cryptocurrency, forex, and stock markets since 2017. Grow your wealth with our expert trading strategies.",
+  title: "exnettrade - Profits Built on Logic",
+  description: "Join exnettrade for secure, professional investment solutions in cryptocurrency, forex, and stock markets since 2017. Grow your wealth with our expert trading strategies.",
   keywords: "crypto investment, forex trading, stock market, secure investments, trading platform",
   alternates: {
-    canonical: "https://www.exnettraders.com",
+    canonical: "https://www.exnettrade.com",
     languages: {
-      'en': 'https://www.exnettraders.com/en',
-      'fr': 'https://www.exnettraders.com/fr',
-      'es': 'https://www.exnettraders.com/es',
+      'en': 'https://www.exnettrade.com/en',
+      'fr': 'https://www.exnettrade.com/fr',
+      'es': 'https://www.exnettrade.com/es',
     },
   },
   openGraph: {
-    title: "exnettraders - Professional Trading Solutions",
+    title: "exnettrade - Professional Trading Solutions",
     description: "Trusted investment platform offering crypto, forex, and stock trading services since 2017",
-    url: "https://www.exnettraders.com",
-    siteName: "exnettraders",
+    url: "https://www.exnettrade.com",
+    siteName: "exnettrade",
     images: [
       {
-        url: "https://www.exnettraders.com/logo.png",
+        url: "https://www.exnettrade.com/logo.png",
         width: 800,
         height: 600,
       },
@@ -34,9 +34,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "exnettraders - Professional Trading Solutions",
+    title: "exnettrade - Professional Trading Solutions",
     description: "Trusted investment platform offering crypto, forex, and stock trading services since 2017",
-    images: ["https://www.exnettraders.com/logo.png"],
+    images: ["https://www.exnettrade.com/logo.png"],
   },
 };
 

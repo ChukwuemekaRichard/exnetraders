@@ -2,10 +2,17 @@
 import UserDashboardLayout from "@/app/components/layouts/UserDashboardLayout";
 import { useState } from "react";
 import axios from "axios";
+import Image from "next/image";
 import { MdContentCopy, MdCheckCircle, MdInfo } from "react-icons/md";
 import { useRouter } from "next/navigation";
 import CustomLoader from "@/app/components/CustomLoader";
-import { Bitcoin, Coins, CircleDollarSign } from "lucide-react";
+
+import Bitcoin from "@/public/bitcoin.png";
+import Ethereum from "@/public/ethereum.png";
+import Solana from "@/public/Solana.png";
+import BNB from "@/public/bnb.jpg";
+import Litecoin from "@/public/litecoin.png";
+import Xrp from "@/public/xrp.jpg";
 
 const SERVER_NAME = process.env.NEXT_PUBLIC_SERVER_NAME;
 
@@ -25,19 +32,37 @@ export default function DepositFunds() {
       id: "bitcoin",
       name: "Bitcoin",
       address: process.env.NEXT_PUBLIC_BITCOIN,
-      icon: <Bitcoin className="h-10 w-10" />,
+      icon: Bitcoin,
     },
     {
       id: "ethereum",
       name: "Ethereum",
       address: process.env.NEXT_PUBLIC_ETHEREUM,
-      icon: <Coins className="h-10 w-10" />,
+      icon: Ethereum,
     },
     {
-      id: "usdt",
-      name: "USDT (TRC20)",
-      address: process.env.NEXT_PUBLIC_USDT,
-      icon: <CircleDollarSign className="h-10 w-10" />,
+      id: "Litecoin",
+      name: "LTC",
+      address: process.env.NEXT_PUBLIC_LTC,
+      icon:Litecoin ,
+    },
+    {
+      id: "solana",
+      name: "Solana",
+      address: process.env.NEXT_PUBLIC_SOLANA,
+      icon: Solana,
+    },
+    {
+      id: "xrp",
+      name: "XRP",
+      address: process.env.NEXT_PUBLIC_XRP,
+      icon: Xrp,
+    },
+    {
+      id: "bnb",
+      name: "BNB",
+      address: process.env.NEXT_PUBLIC_BNB,
+      icon: BNB,
     },
   ];
 
@@ -163,8 +188,8 @@ export default function DepositFunds() {
                   onClick={() => setSelectedMethod(method.id)}
                 >
                   <div className="text-center">
-                    <div className="h-12 w-12 mx-auto mb-2 text-indigo-500">
-                      {method.icon}
+                    <div className="coin-logo">
+                      <Image src={method.icon} alt={method.name}/>
                     </div>
                     <span className="text-gray-800 font-medium">
                       {method.name}

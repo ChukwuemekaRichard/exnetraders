@@ -67,7 +67,7 @@ const ContactButton = ({ dictionary }) => {
             <ul className="space-y-3">
               <li>
                 <a 
-                  href="mailto:exnettraders@gmail.com" 
+                  href="mailto:exnettrade@gmail.com" 
                   className="flex items-center p-2 rounded-md hover:bg-blue-50 transition-colors duration-200"
                 >
                   <div className="bg-blue-100 p-2 rounded-full">
@@ -91,7 +91,7 @@ const ContactButton = ({ dictionary }) => {
               
               <li>
                 <a 
-                  href="https://t.me/exnettraderss" 
+                  href="https://t.me/exnettrades" 
                   target="_blank" 
                   rel="noopener noreferrer" 
                   className="flex items-center p-2 rounded-md hover:bg-blue-50 transition-colors duration-200"

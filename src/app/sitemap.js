@@ -1,6 +1,6 @@
 // app/sitemap.js
 export default async function sitemap() {
-  const baseUrl = "https://www.exnettraders.com";
+  const baseUrl = "https://www.exnettrade.com";
 
   // Core pages with priority and changefreq
   const staticPages = [

@@ -11,19 +11,19 @@ export default function TestimonialsSection({ dictionary }) {
     {
       name: "David Chen",
       position: "Entrepreneur",
-      quote: "exnettraders has completely transformed my approach to crypto investing. The expert analysis and timely recommendations have led to a 32% increase in my portfolio in just 6 months.",
+      quote: "exnettrade has completely transformed my approach to crypto investing. The expert analysis and timely recommendations have led to a 32% increase in my portfolio in just 6 months.",
       stars: 5
     },
     {
       name: "Sarah Johnson",
       position: "Finance Professional",
-      quote: "As someone in the finance industry, I'm impressed by the professionalism and detailed market analysis provided by exnettraders. Their forex strategies have been consistently profitable.",
+      quote: "As someone in the finance industry, I'm impressed by the professionalism and detailed market analysis provided by exnettrade. Their forex strategies have been consistently profitable.",
       stars: 5
     },
     {
       name: "Michael Rodriguez",
       position: "Retired Teacher",
-      quote: "I was nervous about investing my retirement savings, but the team at exnettraders made the process easy to understand. Their diversified approach has given me peace of mind.",
+      quote: "I was nervous about investing my retirement savings, but the team at exnettrade made the process easy to understand. Their diversified approach has given me peace of mind.",
       stars: 4
     }
   ];

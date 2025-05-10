@@ -368,7 +368,7 @@ const InvestmentPlansSection = ({ dictionary }) => {
               "* Returns based on historical performance. Past performance is not indicative of future results. Investment involves risk."}
           </p>
           <a
-            href="https://t.me/exnettraderss"
+            href="https://t.me/exnettrades"
             className="inline-flex items-center bg-white text-blue-900 px-6 py-3 rounded-lg hover:bg-blue-100 transition duration-300"
           >
             <span>Schedule Investment Consultation</span>

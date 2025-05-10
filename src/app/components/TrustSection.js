@@ -7,7 +7,7 @@ const TrustSection = ({ dictionary }) => {
         <div className="text-center mb-12">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
             {dictionary.trust.title ||
-              "Why You Should Trust exnettraders"}
+              "Why You Should Trust exnettrade"}
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
             {dictionary.trust.subtitle ||
@@ -101,7 +101,7 @@ const TrustSection = ({ dictionary }) => {
               </h3>
               <p className="mb-4">
                 {dictionary.trust.regulation.description ||
-                  "exnettraders operates under strict regulatory oversight to ensure your investments are managed with the highest standards of integrity."}
+                  "exnettrade operates under strict regulatory oversight to ensure your investments are managed with the highest standards of integrity."}
               </p>
               <ul className="space-y-2">
                 <li className="flex items-center">

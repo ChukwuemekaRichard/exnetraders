@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState } from "react";
+import Image from "next/image"
+import logo from "@/public/logomain.png";
 import {
   FaFacebook,
   FaTwitter,
@@ -43,7 +45,13 @@ export default function Footer({ dictionary }) {
       <div className="container-custom mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <div>
-            <h3 className="text-xl font-bold mb-4">exnettraders</h3>
+            <div className="company-logo">
+              <Image src={logo}
+               alt="logo"
+              //  width={90}
+               height={80}
+              />
+            </div>
             <p className="text-gray-400 mb-4">
               Professional investment solutions for a secure financial future.
               Trusted by thousands of investors worldwide.
@@ -101,7 +109,7 @@ export default function Footer({ dictionary }) {
               <li className="flex items-center">
                 <FaEnvelope className="text-blue-500 mr-3" />
                 <span className="text-gray-400">
-                  exnettraders@gmail.com
+                  exnettrade@gmail.com
                 </span>
               </li>
             </ul>

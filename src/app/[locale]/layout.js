@@ -10,17 +10,17 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: {
-    default: "exnettraders - Profits Built on Logic",
-    template: "%s | exnettraders",
+    default: "exnettrade - Profits Built on Logic",
+    template: "%s | exnettrade",
   },
   description:
     "Professional investment solutions for crypto, forex, and stock trading with 9+ years of market experience",
   alternates: {
-    canonical: "https://www.exnettraders.com",
+    canonical: "https://www.exnettrade.com",
     languages: {
-      en: "https://www.exnettraders.com/en",
-      fr: "https://www.exnettraders.com/fr",
-      es: "https://www.exnettraders.com/es",
+      en: "https://www.exnettrade.com/en",
+      fr: "https://www.exnettrade.com/fr",
+      es: "https://www.exnettrade.com/es",
     },
   },
 };

@@ -32,13 +32,13 @@ export default function UserDashboardLayout({ children }) {
   const navigation = [
     { name: "Dashboard", href: "/dashboard", icon: MdDashboard },
     {
-      name: "Deposit Funds",
+      name: "Deposit",
       href: "/dashboard/deposit",
       icon: MdAccountBalanceWallet,
     },
-    { name: "Withdrawal", href: "/dashboard/withdrawal", icon: MdPayment },
+    { name: "Withdraw", href: "/dashboard/withdrawal", icon: MdPayment },
     { name: "Investments", href: "/dashboard/investments", icon: MdShowChart },
-    { name: "History", href: "/dashboard/history", icon: MdHistory },
+    { name: "Transactions", href: "/dashboard/history", icon: MdHistory },
     { name: "Profile", href: "/dashboard/profile", icon: MdAccountCircle },
   ];
 
@@ -82,62 +82,62 @@ export default function UserDashboardLayout({ children }) {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-height-screen-ext bg-white-ext">
       {/* Mobile menu button */}
       <button
         onClick={() => setIsMobileMenuOpen(true)}
-        className="lg:hidden fixed top-4 left-4 z-30 p-2 rounded-md text-gray-700 hover:text-gray-900 focus:outline-none bg-white shadow-md"
+        className="mobile-menu-button-ext"
       >
-        <MdMenu className="h-6 w-6" />
+        <MdMenu className="icon-height-6-ext icon-width-6-ext" />
       </button>
 
       {/* Mobile menu */}
-      <div className="lg:hidden">
+      <div className="mobile-menu-container-ext">
         {/* Overlay */}
         {isMobileMenuOpen && (
           <div
-            className="fixed inset-0 z-40 bg-gray-600 bg-opacity-50 transition-opacity"
+            className="mobile-overlay-ext"
             onClick={() => setIsMobileMenuOpen(false)}
           ></div>
         )}
 
         {/* Mobile sidebar */}
         <div
-          className={`fixed inset-y-0 left-0 z-50 flex flex-col w-64 bg-indigo-900 transition-transform duration-300 ease-in-out transform ${
-            isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
-          } rounded-r-xl shadow-2xl`}
+          className={`mobile-sidebar-ext ${
+            isMobileMenuOpen ? "sidebar-visible-ext" : "sidebar-hidden-ext"
+          }`}
         >
-          <div className="flex items-center justify-between h-16 px-4 shadow-lg rounded-tr-xl">
-            <div className="flex items-center justify-center">
-              <div className="h-14 w-14 flex items-center justify-center">
+          <div className="sidebar-header-ext">
+            <div className="logo-container-ext">
+              <div className="logo-wrapper-ext">
                 <Image src={logo} alt="Logo" width={56} height={56} />
               </div>
             </div>
             <button
               onClick={() => setIsMobileMenuOpen(false)}
-              className="text-white focus:outline-none"
+              className="close-button-ext"
             >
-              <MdClose className="h-6 w-6" />
+              <MdClose className="icon-height-6-ext icon-width-6-ext" />
             </button>
           </div>
-          <div className="overflow-y-auto">
-            <nav className="mt-5 px-4 space-y-2">
+          <div className="sidebar-content-ext">
+            <nav className="sidebar-nav-ext">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group flex items-center px-3 py-3 text-base font-medium rounded-xl ${
+                  className={`nav-link-ext ${
                     router.pathname === item.href
-                      ? "bg-indigo-600 text-white"
-                      : "text-indigo-100 hover:bg-indigo-600 hover:text-white"
+                      ? "nav-link-active-ext"
+                      : "nav-link-inactive-ext"
                   }`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <item.icon
-                    className={`mr-3 flex-shrink-0 h-6 w-6 ${
+                    className={`nav-icon-ext ${
                       router.pathname === item.href
-                        ? "text-white"
-                        : "text-indigo-200 group-hover:text-white"
+                        ? "nav-icon-active-ext"
+                        : "nav-icon-inactive-ext"
                     }`}
                   />
                   {item.name}
@@ -145,12 +145,12 @@ export default function UserDashboardLayout({ children }) {
               ))}
             </nav>
           </div>
-          <div className="mt-auto p-4">
+          <div className="sidebar-footer-ext">
             <button
               onClick={handleLogout}
-              className="flex items-center w-full px-3 py-3 text-base font-medium text-indigo-100 rounded-xl hover:bg-indigo-600 hover:text-white"
+              className="logout-button-ext"
             >
-              <MdLogout className="mr-3 h-6 w-6 text-indigo-200" />
+              <MdLogout className="logout-icon-ext" />
               Sign Out
             </button>
           </div>
@@ -158,33 +158,34 @@ export default function UserDashboardLayout({ children }) {
       </div>
 
       {/* Desktop layout */}
-      <div className="flex h-screen">
+      <div className="dashboard-layout-ext">
         {/* Desktop sidebar */}
-        <div className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 bg-indigo-900 rounded-r-xl shadow-lg">
-          <div className="flex items-center justify-center h-16  shadow-lg rounded-tr-xl">
-            <div className="flex items-center justify-center">
-              <div className="h-14 w-14 flex items-center justify-center">
+        <div className="desktop-sidebar-ext">
+          <div className="sidebar-header-ext">
+            <div className="logo-container-ext">
+              <div className="logo-wrapper-ext">
                 <Image src={logo} alt="Logo" width={56} height={56} />
+                <p className="logo-p-ext"><span>e</span>xnettrade</p>
               </div>
             </div>
           </div>
-          <div className="flex-1 flex flex-col overflow-y-auto px-2">
-            <nav className="mt-5 flex-1 px-2 space-y-2">
+          <div className="sidebar-content-ext">
+            <nav className="desktop-nav-ext">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
-                  className={`group flex items-center px-3 py-3 text-sm font-medium rounded-xl transition duration-150 ease-in-out ${
+                  className={`desktop-nav-link-ext ${
                     router.pathname === item.href
-                      ? "bg-indigo-600 text-white"
-                      : "text-indigo-100 hover:bg-indigo-600 hover:text-white"
+                      ? "desktop-nav-link-active-ext"
+                      : "desktop-nav-link-inactive-ext"
                   }`}
                 >
                   <item.icon
-                    className={`mr-3 flex-shrink-0 h-6 w-6 ${
+                    className={`desktop-nav-icon-ext ${
                       router.pathname === item.href
-                        ? "text-white"
-                        : "text-indigo-200 group-hover:text-white"
+                        ? "desktop-nav-icon-active-ext"
+                        : "desktop-nav-icon-inactive-ext"
                     }`}
                   />
                   {item.name}
@@ -192,12 +193,12 @@ export default function UserDashboardLayout({ children }) {
               ))}
             </nav>
           </div>
-          <div className="p-4">
+          <div className="desktop-sidebar-footer-ext">
             <button
               onClick={handleLogout}
-              className="flex items-center w-full px-3 py-3 text-sm font-medium text-indigo-100 rounded-xl hover:bg-indigo-600 hover:text-white transition duration-150 ease-in-out"
+              className="desktop-logout-button-ext"
             >
-              <MdLogout className="mr-3 h-6 w-6 text-indigo-200" />
+              <MdLogout className="desktop-logout-icon-ext" />
               Sign Out
             </button>
           </div>
@@ -205,26 +206,24 @@ export default function UserDashboardLayout({ children }) {
         </div>
 
         {/* Main content */}
-        <div className="lg:pl-64 flex flex-col flex-1">
+        <div className="main-content-ext">
           {/* Top navigation */}
-          <header className="bg-white shadow-xl">
-            <div className="flex justify-between items-center px-12 sm:px-6 lg:px-8 h-16">
-              <div className="flex items-center">
-                <div className="ml-3 relative">
-                  <div className="flex items-center">
-                    <div className="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center text-white">
-                      {userName.charAt(0).toUpperCase()}
-                    </div>
-                    <span className="ml-2 text-gray-700">{userName}</span>
+          <header className="header-ext">
+            <div className="header-container-ext">
+              <div className="user-info-ext">
+                <div className="user-avatar-container-ext">
+                  <div className="user-avatar-ext">
+                    {userName.charAt(0).toUpperCase()}
                   </div>
+                  <span className="user-name-ext">{userName}</span>
                 </div>
               </div>
             </div>
           </header>
 
           {/* Main content */}
-          <main className="flex-1 pb-8 bg-gray-50">
-            <div className="px-4 sm:px-6 lg:px-8 py-6">{children}</div>
+          <main className="main-ext">
+            <div className="content-container-ext">{children}</div>
           </main>
         </div>
       </div>

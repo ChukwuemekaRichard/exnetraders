@@ -428,7 +428,7 @@ export default function Dashboard() {
               Our support team is always ready to assist you with any questions.
             </p>
             <a
-              href="https://t.me/exnettraderss"
+              href="https://t.me/exnettrades"
               className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-900 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               Contact Support

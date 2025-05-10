@@ -12,7 +12,7 @@ const GlobalReachSection = ({ dictionary }) => {
           </h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
             {dictionary.globalReach.subtitle ||
-              "exnettraders connects investors from around the world to the most promising cryptocurrency opportunities."}
+              "exnettrade connects investors from around the world to the most promising cryptocurrency opportunities."}
           </p>
         </div>
 
