@@ -6,6 +6,7 @@ import axios from "axios";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import logo from "@/public/logo.png";
 import { FcGoogle } from "react-icons/fc";
 import { MdEmail } from "react-icons/md";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
@@ -177,8 +178,9 @@ export default function Auth() {
 
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
-          <h2 className="text-3xl font-extrabold text-gray-900">
+          <h2 className="text-3xl font-extrabold text-gray-900 logo-row">
             exnettrade
+            
           </h2>
           <p className="mt-2 text-sm text-gray-600">
             Secure your financial future with smart investments

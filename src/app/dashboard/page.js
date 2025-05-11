@@ -13,6 +13,8 @@ import {
 import UserDashboardLayout from "../components/layouts/UserDashboardLayout";
 import CustomLoader from "../components/CustomLoader";
 
+import TawkToChat from "../components/smartsup";
+
 const SERVER_NAME = process.env.NEXT_PUBLIC_SERVER_NAME;
 
 export default function Dashboard() {
@@ -435,7 +437,9 @@ export default function Dashboard() {
             </a>
           </div>
         </div>
+        
       </div>
+      <TawkToChat/>
     </UserDashboardLayout>
   );
 }

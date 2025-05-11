@@ -21,16 +21,16 @@ export default async function Home({ params }) {
       {/* Main Hero - First impression/Hero Section */}       
       <HeroSection dictionary={dictionary} />        
       
-      {/* Features - Services overview */}       
+        
       <FeaturesSection dictionary={dictionary} />        
       
-      {/* Market Trends - Show performance */}       
+            
       <MarketTrendsSection dictionary={dictionary} />        
       
-      {/* Trust Section - Why choose us */}       
+           
       <TrustSection dictionary={dictionary} />        
       
-      {/* Team Section - Who we are */}       
+            
       <TeamSection dictionary={dictionary} />        
       
       {/* Investment Plans - Monetization options */}       

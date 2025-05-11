@@ -19,7 +19,7 @@ const MarketTrendsSection = ({ dictionary }) => {
         </div>
 
         <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
+          <div className="bg-gray-800 p-2 rounded-lg shadow-lg">
             <h3 className="text-xl font-semibold mb-4 text-blue-400">
               {dictionary.marketTrends.chartTitle ||
                 "Growth Comparison (Last 6 Months)"}

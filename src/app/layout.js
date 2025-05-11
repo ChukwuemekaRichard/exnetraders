@@ -1,7 +1,8 @@
-// app/layout.js (Root Layout - handles ONLY html/body)
+
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { UserProvider } from "./contexts/UserContext";
+import SmartSupp from "./components/smartsup";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -46,7 +47,10 @@ export default function RootLayout({ children }) {
       <body
         className={`${inter.className} flex flex-col min-h-screen bg-gray-50`}
       >
-        <UserProvider>{children}</UserProvider>
+        <UserProvider>
+          {children}
+          
+        </UserProvider>
       </body>
     </html>
   );

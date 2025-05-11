@@ -5,6 +5,7 @@ import Footer from "../components/Footer";
 import { getDictionary } from "../i18n";
 import Carousel from "../components/Carousel";
 import ContactButton from "../components/ContactButton"; // Import the new component
+import TawkToChat from "../components/smartsup";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -36,7 +37,7 @@ export default async function RootLayout({ children, params }) {
       <main className="flex-grow">{children}</main>
       <Footer dictionary={dictionary} />
       <Carousel />
-      <ContactButton dictionary={dictionary} />
+      <TawkToChat/>
     </>
   );
 }

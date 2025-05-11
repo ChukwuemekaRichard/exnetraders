@@ -18,6 +18,7 @@ import axios from "axios";
 import logo from "@/public/logo.png";
 import CustomLoader from "../CustomLoader";
 import ContactButton from "../ContactButton";
+import { Copy, History, LayoutDashboard, TrendingUp, User, Users, Wallet2Icon } from "lucide-react";
 
 const SERVER_NAME = process.env.NEXT_PUBLIC_SERVER_NAME;
 const CLIENT_NAME = process.env.NEXT_PUBLIC_CLIENT_NAME;
@@ -31,16 +32,17 @@ export default function UserDashboardLayout({ children }) {
 
   // Navigation items
   const navigation = [
-    { name: "Dashboard", href: "/dashboard", icon: MdDashboard },
+    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     {
       name: "Deposit",
       href: "/dashboard/deposit",
-      icon: MdAccountBalanceWallet,
+      icon: Wallet2Icon,
     },
-    { name: "Withdraw", href: "/dashboard/withdrawal", icon: MdPayment },
-    { name: "Investments", href: "/dashboard/investments", icon: MdShowChart },
-    { name: "Transactions", href: "/dashboard/history", icon: MdHistory },
-    { name: "Profile", href: "/dashboard/profile", icon: MdAccountCircle },
+    { name: "Withdraw", href: "/dashboard/withdrawal", icon: Wallet2Icon },
+    { name: "Investments", href: "/dashboard/investments", icon: TrendingUp },
+    { name: "Transactions", href: "/dashboard/history", icon: History },
+    { name: "Profile", href: "/dashboard/profile", icon: User },
+    { name: "Referall", href: "/dashboard/referrals", icon: Users },
   ];
 
   useEffect(() => {
@@ -147,10 +149,7 @@ export default function UserDashboardLayout({ children }) {
             </nav>
           </div>
           <div className="sidebar-footer-ext">
-            <button
-              onClick={handleLogout}
-              className="logout-button-ext"
-            >
+            <button onClick={handleLogout} className="logout-button-ext">
               <MdLogout className="logout-icon-ext" />
               Sign Out
             </button>
@@ -166,7 +165,9 @@ export default function UserDashboardLayout({ children }) {
             <div className="logo-container-ext">
               <div className="logo-wrapper-ext">
                 <Image src={logo} alt="Logo" width={56} height={56} />
-                <p className="logo-p-ext"><span>e</span>xnettrade</p>
+                <p className="logo-p-ext">
+                  <span>e</span>xnettrade
+                </p>
               </div>
             </div>
           </div>
@@ -203,7 +204,7 @@ export default function UserDashboardLayout({ children }) {
               Sign Out
             </button>
           </div>
-          <ContactButton />
+         
         </div>
 
         {/* Main content */}
@@ -217,12 +218,6 @@ export default function UserDashboardLayout({ children }) {
                     {userName.charAt(0).toUpperCase()}
                   </div>
                   <span className="user-name-ext">{userName}</span>
-                   <div className="bg-white shadow rounded-lg">
-                      <h2>
-                        {CLIENT_NAME}
-                        {userData.referralCode}{" "}
-                      </h2>
-                    </div>
                 </div>
               </div>
             </div>
@@ -232,6 +227,7 @@ export default function UserDashboardLayout({ children }) {
           <main className="main-ext">
             <div className="content-container-ext">{children}</div>
           </main>
+         
         </div>
       </div>
     </div>
