@@ -3,9 +3,9 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import UserDashboardLayout from "@/app/components/layouts/UserDashboardLayout";
-import { 
-  MdPerson, 
-  MdSearch, 
+import {
+  MdPerson,
+  MdSearch,
   MdShare,
   MdContentCopy,
   MdCheckCircle,
@@ -29,7 +29,6 @@ export default function Referrals() {
   const [error, setError] = useState(null);
   const [copied, setCopied] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
-  
 
   const mockReferrals = [
     {
@@ -78,7 +77,7 @@ export default function Referrals() {
       rewardStatus: "pending"
     }
   ];
-  
+
   useEffect(() => {
     const fetchReferrals = async () => {
       try {
@@ -94,8 +93,8 @@ export default function Referrals() {
         
         setUserData(userResponse.data);
         
-        //  fetch actual referrals here
-        // For now i dey  use mock data
+        // fetch actual referrals here
+        // For now using mock data
         // const referralsResponse = await axios.get(`${SERVER_NAME}api/referrals`, {
         //   headers: { Authorization: `Bearer ${token}` },
         // });
@@ -133,10 +132,10 @@ export default function Referrals() {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
-  
+
   const shareReferral = () => {
     const referralUrl = `${window.location.origin}?ref=${userData.referralCode}`;
-    
+
     if (navigator.share) {
       navigator.share({
         title: 'Join exnettrade with my referral code',
@@ -149,27 +148,24 @@ export default function Referrals() {
     }
   };
 
-
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
-  
 
   const filteredReferrals = referrals.filter(referral => {
-    const matchesTab = 
-      activeTab === 'all' || 
+    const matchesTab =
+      activeTab === 'all' ||
       (activeTab === 'active' && referral.status === 'active') ||
       (activeTab === 'pending' && referral.status === 'pending');
-      
+
     const matchesSearch = 
       referral.referredUser.toLowerCase().includes(searchTerm.toLowerCase()) ||
       referral.email.toLowerCase().includes(searchTerm.toLowerCase());
-    
+
     return matchesTab && matchesSearch;
   });
 
-   
   if (isLoading) {
     return (
       <UserDashboardLayout>
@@ -181,21 +177,19 @@ export default function Referrals() {
   if (error) {
     return (
       <UserDashboardLayout>
-        <div className="p-6 text-red-500">
-          Error: {error}
-        </div>
+        <div className="p-6 text-red-500">Error: {error}</div>
       </UserDashboardLayout>
     );
   }
 
   return (
     <UserDashboardLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 w-full max-w-full overflow-x-hidden">
         <h1 className="text-2xl font-semibold text-gray-800">Referral Program</h1>
-        
+
         {/* Referral Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-200 p-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+          <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-200 p-4 md:p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-medium text-gray-700">Total Referrals</h3>
               <div className="p-3 bg-indigo-100 rounded-full">
@@ -208,7 +202,7 @@ export default function Referrals() {
             </p>
           </div>
           
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-200 p-6">
+          <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-200 p-4 md:p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-medium text-gray-700">Total Earnings</h3>
               <div className="p-3 bg-green-100 rounded-full">
@@ -221,7 +215,7 @@ export default function Referrals() {
             </p>
           </div>
           
-          <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-200 p-6">
+          <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-200 p-4 md:p-6">
             <div className="flex items-center justify-between mb-4">
               <h3 className="text-lg font-medium text-gray-700">Pending Rewards</h3>
               <div className="p-3 bg-yellow-100 rounded-full">
@@ -236,20 +230,20 @@ export default function Referrals() {
         </div>
         
         {/* Referral Code Card */}
-        <div className="bg-gradient-to-r from-indigo-600 to-blue-500 shadow-lg rounded-xl overflow-hidden p-6 text-white relative">
+        <div className="bg-gradient-to-r from-indigo-600 to-blue-500 shadow-lg rounded-xl overflow-hidden p-4 md:p-6 text-white relative">
           <div className="mb-4">
             <h3 className="text-xl font-semibold mb-1">Your Referral Code</h3>
             <p className="text-sm opacity-80">Share this code with friends to earn rewards</p>
           </div>
           
           <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
-            <div className="bg-white/20 backdrop-blur-md px-4 py-3 rounded-lg flex-grow flex items-center justify-between">
-              <span className="text-xl font-mono font-semibold tracking-wider">
+            <div className="bg-white/20 backdrop-blur-md px-4 py-3 rounded-lg flex-grow flex items-center justify-between w-full">
+              <span className="text-xl font-mono font-semibold tracking-wider truncate">
                 {userData.referralCode}
               </span>
               <motion.button
                 onClick={copyToClipboard}
-                className="text-white hover:text-white/80 transition-colors"
+                className="text-white hover:text-white/80 transition-colors ml-2 flex-shrink-0"
                 whileTap={{ scale: 0.95 }}
                 initial={{ scale: 1 }}
               >
@@ -263,12 +257,12 @@ export default function Referrals() {
             
             <motion.button
               onClick={shareReferral}
-              className="flex items-center justify-center gap-2 bg-white text-indigo-600 font-medium px-6 py-3 rounded-lg hover:bg-white/90 transition-colors"
+              className="flex items-center justify-center gap-2 bg-white text-indigo-600 font-medium px-4 sm:px-6 py-3 rounded-lg hover:bg-white/90 transition-colors flex-shrink-0"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
             >
               <MdShare className="h-5 w-5" />
-              Share
+              <span className="whitespace-nowrap">Share</span>
             </motion.button>
           </div>
           
@@ -283,10 +277,10 @@ export default function Referrals() {
         
         {/* Referrals List */}
         <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-200">
-          <div className="p-6">
+          <div className="p-4 md:p-6">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
               {/* Tabs */}
-              <div className="flex border-b border-gray-200">
+              <div className="flex border-b border-gray-200 overflow-x-auto">
                 <button
                   onClick={() => setActiveTab('all')}
                   className={`pb-2 px-4 text-sm font-medium ${
@@ -319,7 +313,7 @@ export default function Referrals() {
                 </button>
               </div>
               
-              <div className="relative flex-grow max-w-md">
+              <div className="relative w-full md:max-w-md">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <MdSearch className="h-5 w-5 text-gray-400" />
                 </div>
@@ -333,20 +327,20 @@ export default function Referrals() {
               </div>
             </div>
             
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
+            <div className="overflow-x-auto w-full">
+              <table className="min-w-full divide-y divide-gray-200 table-fixed">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       User
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Date Joined
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Status
                     </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    <th scope="col" className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Reward
                     </th>
                   </tr>
@@ -355,22 +349,22 @@ export default function Referrals() {
                   {filteredReferrals.length > 0 ? (
                     filteredReferrals.map((referral) => (
                       <tr key={referral._id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
-                            <div className="flex-shrink-0 h-10 w-10 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center">
-                              <MdPerson className="h-6 w-6" />
+                            <div className="flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center">
+                              <MdPerson className="h-4 w-4 sm:h-6 sm:w-6" />
                             </div>
-                            <div className="ml-4">
-                              <div className="text-sm font-medium text-gray-900">{referral.referredUser}</div>
-                              <div className="text-sm text-gray-500">{referral.email}</div>
+                            <div className="ml-2 sm:ml-4">
+                              <div className="text-xs sm:text-sm font-medium text-gray-900">{referral.referredUser}</div>
+                              <div className="text-xs sm:text-sm text-gray-500 truncate max-w-[120px] sm:max-w-full">{referral.email}</div>
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-700">{formatDate(referral.date)}</div>
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                          <div className="text-xs sm:text-sm text-gray-700">{formatDate(referral.date)}</div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
+                          <span className={`inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-full text-xs font-medium ${
                             referral.status === 'active' 
                               ? 'bg-green-100 text-green-800' 
                               : 'bg-yellow-100 text-yellow-800'
@@ -382,16 +376,16 @@ export default function Referrals() {
                             )}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-3 sm:px-6 py-4 whitespace-nowrap">
                           <div className="flex items-center">
-                            <span className={`text-sm font-medium ${
+                            <span className={`text-xs sm:text-sm font-medium ${
                               referral.rewardStatus === 'completed' 
                                 ? 'text-green-600' 
                                 : 'text-yellow-600'
                             }`}>
                               ${referral.reward.toFixed(2)}
                             </span>
-                            <span className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                            <span className={`ml-2 inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-full text-xs font-medium ${
                               referral.rewardStatus === 'completed' 
                                 ? 'bg-green-100 text-green-800' 
                                 : 'bg-yellow-100 text-yellow-800'
@@ -416,10 +410,10 @@ export default function Referrals() {
         </div>
         
         {/* How It Works Section */}
-        <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-200 p-6">
+        <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-200 p-4 md:p-6">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">How Referrals Work</h2>
           
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             <div className="flex flex-col items-center text-center p-4">
               <div className="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mb-4">
                 <MdContentCopy className="h-6 w-6" />
