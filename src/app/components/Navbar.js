@@ -113,7 +113,7 @@ export default function Navbar({ dictionary, locale }) {
             <div className="mx-2 h-6 w-px bg-gray-700/50" />
 
             <Link
-              href="https://t.me/exnettrades"
+              href="https://t.me/exnettrade"
               className="relative px-4 py-2.5 group overflow-hidden rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-sm font-medium text-white"
             >
               <span className="relative z-10 flex items-center">
