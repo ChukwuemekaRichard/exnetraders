@@ -37,7 +37,7 @@ export default async function RootLayout({ children, params }) {
       <main className="flex-grow">{children}</main>
       <Footer dictionary={dictionary} />
       <Carousel />
-      <TawkToChat/>
+      <TawkToChat />
     </>
   );
 }

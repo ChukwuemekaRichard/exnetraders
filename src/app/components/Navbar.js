@@ -80,6 +80,14 @@ export default function Navbar({ dictionary, locale }) {
                 href: `/${locale}/testimonials`,
                 label: dictionary.nav.testimonials,
               },
+              {
+                href: `/auth`,
+                label: "login",
+              },
+              {
+                href: `/auth`,
+                label: "SignUp",
+              },
             ].map((item) => (
               <Link
                 key={item.href}
@@ -156,6 +164,14 @@ export default function Navbar({ dictionary, locale }) {
                   {
                     href: `/${locale}/testimonials`,
                     label: dictionary.nav.testimonials,
+                  },
+                  {
+                    href: `/auth`,
+                    label: "login",
+                  },
+                  {
+                    href: `/auth`,
+                    label: "SignUp",
                   },
                   {
                     href: `https://t.me/exnettrades`,
