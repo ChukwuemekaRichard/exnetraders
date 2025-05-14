@@ -1,6 +1,7 @@
 
 import { Inter } from "next/font/google";
 import "./globals.css";
+import Head from 'next/head'
 import { UserProvider } from "./contexts/UserContext";
 import SmartSupp from "./components/smartsup";
 
@@ -44,12 +45,16 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
+
       <body
         className={`${inter.className} flex flex-col min-h-screen bg-gray-50`}
       >
         <UserProvider>
           {children}
-          
+
         </UserProvider>
       </body>
     </html>
