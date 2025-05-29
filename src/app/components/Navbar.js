@@ -85,7 +85,7 @@ export default function Navbar({ dictionary, locale }) {
                 label: "login",
               },
               {
-                href: `/auth`,
+                href: `/auth/sign'`,
                 label: "SignUp",
               },
             ].map((item) => (

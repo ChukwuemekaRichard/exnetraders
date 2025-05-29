@@ -212,7 +212,7 @@ export default function Dashboard() {
           </div>
           <div className="border-t border-gray-200">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
+              <table className="min-w-full divide-y divide-gray-200 overflow-x-auto" >
                 <thead className="bg-gray-50">
                   <tr>
                     <th
@@ -245,7 +245,7 @@ export default function Dashboard() {
                   {dashboardData.recentTransactions?.length > 0 ? (
                     dashboardData.recentTransactions.map((transaction) => (
                       <tr key={transaction._id}>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-6 py-4 ">
                           <div className="flex items-center">
                             {transaction.type === "deposit" && (
                               <MdArrowUpward className="mr-2 h-5 w-5 text-green-500" />
@@ -264,7 +264,7 @@ export default function Dashboard() {
                             </span>
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-6 py-4 ">
                           <div
                             className={`text-sm ${
                               transaction.type === "withdrawal"
@@ -276,7 +276,7 @@ export default function Dashboard() {
                             {formatNumber(transaction.amount)}
                           </div>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
+                        <td className="px-6 py-4 ">
                           <span
                             className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                               transaction.status === "completed"
@@ -289,7 +289,8 @@ export default function Dashboard() {
                             {transaction.status}
                           </span>
                         </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        <td className="px-6 py-4 
+                         text-sm text-gray-500">
                           {new Date(transaction.date).toLocaleDateString()}
                         </td>
                       </tr>

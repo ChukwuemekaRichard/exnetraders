@@ -320,7 +320,7 @@ export default function AdminDashboard() {
                 <option>Last 90 Days</option>
               </select>
             </div>
-            <div className="h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+            <div className="h-64 bg-gray-90 rounded-lg flex items-center justify-center">
               <div className="text-center text-gray-500">
                 <Activity size={48} className="mx-auto mb-2" />
                 <p>Activity chart will be displayed here</p>
