@@ -211,8 +211,9 @@ export default function Dashboard() {
             </a>
           </div>
           <div className="border-t border-gray-200">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200 overflow-x-auto" >
+            {/* Desktop Table View - Hidden on mobile */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
                     <th
@@ -245,7 +246,7 @@ export default function Dashboard() {
                   {dashboardData.recentTransactions?.length > 0 ? (
                     dashboardData.recentTransactions.map((transaction) => (
                       <tr key={transaction._id}>
-                        <td className="px-6 py-4 ">
+                        <td className="px-6 py-4">
                           <div className="flex items-center">
                             {transaction.type === "deposit" && (
                               <MdArrowUpward className="mr-2 h-5 w-5 text-green-500" />
@@ -264,7 +265,7 @@ export default function Dashboard() {
                             </span>
                           </div>
                         </td>
-                        <td className="px-6 py-4 ">
+                        <td className="px-6 py-4">
                           <div
                             className={`text-sm ${
                               transaction.type === "withdrawal"
@@ -276,7 +277,7 @@ export default function Dashboard() {
                             {formatNumber(transaction.amount)}
                           </div>
                         </td>
-                        <td className="px-6 py-4 ">
+                        <td className="px-6 py-4">
                           <span
                             className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
                               transaction.status === "completed"
@@ -289,8 +290,7 @@ export default function Dashboard() {
                             {transaction.status}
                           </span>
                         </td>
-                        <td className="px-6 py-4 
-                         text-sm text-gray-500">
+                        <td className="px-6 py-4 text-sm text-gray-500">
                           {new Date(transaction.date).toLocaleDateString()}
                         </td>
                       </tr>
@@ -307,6 +307,65 @@ export default function Dashboard() {
                   )}
                 </tbody>
               </table>
+            </div>
+
+            {/* Mobile Card View - Visible only on mobile */}
+            <div className="md:hidden divide-y divide-gray-200">
+              {dashboardData.recentTransactions?.length > 0 ? (
+                dashboardData.recentTransactions.map((transaction) => (
+                  <div key={transaction._id} className="p-4 bg-white">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center">
+                        {transaction.type === "deposit" && (
+                          <MdArrowUpward className="mr-2 h-5 w-5 text-green-500" />
+                        )}
+                        {transaction.type === "withdrawal" && (
+                          <MdArrowDownward className="mr-2 h-5 w-5 text-red-500" />
+                        )}
+                        {transaction.type === "investment" && (
+                          <MdTrendingUp className="mr-2 h-5 w-5 text-blue-500" />
+                        )}
+                        {transaction.type === "payout" && (
+                          <MdAccountBalance className="mr-2 h-5 w-5 text-indigo-500" />
+                        )}
+                        <span className="capitalize font-medium text-gray-900">
+                          {transaction.type}
+                        </span>
+                      </div>
+                      <span
+                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                          transaction.status === "completed"
+                            ? "bg-green-100 text-green-800"
+                            : transaction.status === "pending"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {transaction.status}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div
+                        className={`text-lg font-semibold ${
+                          transaction.type === "withdrawal"
+                            ? "text-red-600"
+                            : "text-green-600"
+                        }`}
+                      >
+                        {transaction.type === "withdrawal" ? "-" : "+"}$
+                        {formatNumber(transaction.amount)}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {new Date(transaction.date).toLocaleDateString()}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="p-4 text-center text-sm text-gray-500">
+                  No recent transactions
+                </div>
+              )}
             </div>
           </div>
         </div>

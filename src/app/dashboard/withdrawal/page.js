@@ -6,7 +6,7 @@ import UserDashboardLayout from "@/app/components/layouts/UserDashboardLayout";
 import { MdInfo, MdWarning } from "react-icons/md";
 import CustomLoader from "@/app/components/CustomLoader";
 import { useUser } from "@/app/contexts/UserContext";
-import { Bitcoin,  Coins, CircleDollarSign, } from "lucide-react";
+import { Bitcoin, Coins, CircleDollarSign } from "lucide-react";
 
 const SERVER_NAME = process.env.NEXT_PUBLIC_SERVER_NAME;
 
@@ -25,17 +25,20 @@ export default function WithdrawalFunds() {
     {
       id: "bitcoin",
       name: "Bitcoin",
-      icon: <Bitcoin className="h-10 w-10" />,
+      icon: <Bitcoin className="h-8 w-8 md:h-10 md:w-10" />,
+      shortName: "BTC"
     },
     {
       id: "ethereum",
       name: "Ethereum",
-      icon: <Coins className="h-10 w-10" />,
+      icon: <Coins className="h-8 w-8 md:h-10 md:w-10" />,
+      shortName: "ETH"
     },
     {
       id: "usdt",
       name: "USDT (TRC20)",
-      icon: <CircleDollarSign className="h-10 w-10" />,
+      icon: <CircleDollarSign className="h-8 w-8 md:h-10 md:w-10" />,
+      shortName: "USDT"
     },
   ];
 
@@ -96,11 +99,13 @@ export default function WithdrawalFunds() {
 
   return (
     <UserDashboardLayout>
-      <div className="space-y-6">
-        <h1 className="text-2xl font-semibold text-gray-800">Withdraw Funds</h1>
+      <div className="space-y-4 md:space-y-6 px-4 md:px-0">
+        <div className="flex items-center justify-between">
+          <h1 className="text-xl md:text-2xl font-semibold text-gray-800">Withdraw Funds</h1>
+        </div>
 
         {error && (
-          <div className="bg-red-50 border-l-4 border-red-500 p-4">
+          <div className="bg-red-50 border-l-4 border-red-500 p-3 md:p-4 rounded-md">
             <div className="flex">
               <div className="flex-shrink-0">
                 <svg
@@ -123,49 +128,55 @@ export default function WithdrawalFunds() {
           </div>
         )}
 
+        {/* Balance Card - Mobile Optimized */}
+        <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-4 md:p-6 text-white">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm md:text-base opacity-90">Available Balance</p>
+              <p className="text-2xl md:text-3xl font-bold">${user?.balance?.toLocaleString() || '0.00'}</p>
+            </div>
+            <div className="p-2 md:p-3 bg-white bg-opacity-20 rounded-lg">
+              <MdInfo className="h-6 w-6 md:h-8 md:w-8" />
+            </div>
+          </div>
+        </div>
+
         <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-200">
-          <div className="p-6">
-            <h2 className="text-xl font-medium text-gray-800 mb-6">
+          <div className="p-4 md:p-6">
+            <h2 className="text-lg md:text-xl font-medium text-gray-800 mb-4 md:mb-6">
               Choose Withdrawal Method
             </h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            {/* Payment Methods - Mobile Responsive Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-6">
               {withdrawalMethods.map((method) => (
                 <button
                   key={method.id}
                   type="button"
-                  className={`p-4 rounded-lg border-2 flex flex-col items-center justify-center transition-colors ${
+                  className={`p-3 md:p-4 rounded-lg border-2 flex flex-col items-center justify-center transition-all duration-200 ${
                     selectedMethod === method.id
-                      ? "border-indigo-500 bg-indigo-50"
-                      : "border-gray-200 hover:border-indigo-300"
+                      ? "border-indigo-500 bg-indigo-50 shadow-md"
+                      : "border-gray-200 hover:border-indigo-300 hover:shadow-sm"
                   }`}
                   onClick={() => setSelectedMethod(method.id)}
                 >
                   <div className="text-center">
-                    <div className="h-12 w-12 mx-auto mb-2 text-indigo-500">
+                    <div className="mx-auto mb-2 text-indigo-500">
                       {method.icon}
                     </div>
-                    <span className="text-gray-800 font-medium">
+                    <span className="text-sm md:text-base text-gray-800 font-medium block">
                       {method.name}
+                    </span>
+                    <span className="text-xs text-gray-500 mt-1 block md:hidden">
+                      {method.shortName}
                     </span>
                   </div>
                 </button>
               ))}
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="bg-indigo-50 p-4 rounded-lg border border-indigo-100 flex items-start">
-                <MdInfo className="h-5 w-5 text-indigo-500 mt-0.5" />
-                <div className="ml-3">
-                  <p className="text-sm text-gray-600">
-                    Available Balance:{" "}
-                    <span className="text-gray-800 font-medium">
-                      ${user?.balance || 0}
-                    </span>
-                  </p>
-                </div>
-              </div>
-
+            <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
+              {/* Amount Input */}
               <div>
                 <label
                   htmlFor="amount"
@@ -173,42 +184,53 @@ export default function WithdrawalFunds() {
                 >
                   Withdrawal Amount (USD)
                 </label>
-                <input
-                  type="number"
-                  id="amount"
-                  value={amount}
-                  onChange={(e) => setAmount(e.target.value)}
-                  min="50"
-                  max={user?.balance || 0}
-                  step="0.01"
-                  required
-                  className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-gray-800 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                  placeholder="Enter amount (minimum $50)"
-                />
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <span className="text-gray-500 text-lg">$</span>
+                  </div>
+                  <input
+                    type="number"
+                    id="amount"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    min="50"
+                    max={user?.balance || 0}
+                    step="0.01"
+                    required
+                    className="block w-full pl-8 pr-3 py-3 bg-white border border-gray-300 rounded-md shadow-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-lg"
+                    placeholder="Enter amount (minimum $50)"
+                  />
+                </div>
+                <p className="mt-1 text-xs text-gray-500">
+                  Minimum withdrawal: $50 • Maximum: ${user?.balance?.toLocaleString() || '0.00'}
+                </p>
               </div>
 
+              {/* Wallet Address Input */}
               <div>
                 <label
                   htmlFor="withdrawalAddress"
                   className="block text-sm font-medium text-gray-700 mb-2"
                 >
-                  {selectedMethod.charAt(0).toUpperCase() +
-                    selectedMethod.slice(1)}{" "}
-                  Wallet Address
+                  {selectedMethod.charAt(0).toUpperCase() + selectedMethod.slice(1)} Wallet Address
                 </label>
-                <input
-                  type="text"
+                <textarea
                   id="withdrawalAddress"
                   value={withdrawalAddress}
                   onChange={(e) => setWithdrawalAddress(e.target.value)}
                   required
-                  className="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm text-gray-800 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                  rows={3}
+                  className="block w-full px-3 py-3 bg-white border border-gray-300 rounded-md shadow-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 resize-none"
                   placeholder={`Enter your ${selectedMethod} wallet address`}
                 />
+                <p className="mt-1 text-xs text-gray-500">
+                  Double-check your wallet address. Cryptocurrency transactions cannot be reversed.
+                </p>
               </div>
 
-              <div className="flex items-start p-4 bg-yellow-50 rounded-lg border border-yellow-100">
-                <MdWarning className="h-5 w-5 text-yellow-500 mt-0.5" />
+              {/* Warning Notice */}
+              <div className="flex items-start p-3 md:p-4 bg-yellow-50 rounded-lg border border-yellow-100">
+                <MdWarning className="h-5 w-5 text-yellow-500 mt-0.5 flex-shrink-0" />
                 <div className="ml-3">
                   <p className="text-sm text-gray-600">
                     Please verify all details carefully before submitting.
@@ -219,11 +241,12 @@ export default function WithdrawalFunds() {
                 </div>
               </div>
 
-              <div className="flex items-center">
+              {/* Submit Button */}
+              <div className="pt-2">
                 <button
                   type="submit"
-                  disabled={isSubmitting}
-                  className="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting || !amount || !withdrawalAddress}
+                  className="w-full flex justify-center items-center py-3 md:py-4 px-4 border border-transparent shadow-sm text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                 >
                   {isSubmitting ? (
                     <>
@@ -258,42 +281,74 @@ export default function WithdrawalFunds() {
           </div>
         </div>
 
+        {/* Instructions Card - Mobile Optimized */}
         <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-200">
-          <div className="p-6">
-            <h2 className="text-xl font-medium text-gray-800 mb-4">
+          <div className="p-4 md:p-6">
+            <h2 className="text-lg md:text-xl font-medium text-gray-800 mb-3 md:mb-4">
               Withdrawal Instructions
             </h2>
-            <div className="space-y-4 text-gray-600">
-              <p>
-                <span className="font-medium text-gray-700">
-                  1. Select Withdrawal Method:
-                </span>{" "}
-                Choose your preferred cryptocurrency option.
-              </p>
-              <p>
-                <span className="font-medium text-gray-700">
-                  2. Enter Amount:
-                </span>{" "}
-                Specify how much you wish to withdraw (minimum $50).
-              </p>
-              <p>
-                <span className="font-medium text-gray-700">
-                  3. Provide Wallet Address:
-                </span>{" "}
-                Enter your wallet information carefully.
-              </p>
-              <p>
-                <span className="font-medium text-gray-700">
-                  4. Verification:
-                </span>{" "}
-                Larger withdrawals may require additional verification.
-              </p>
-              <p>
-                <span className="font-medium text-gray-700">
-                  5. Processing Time:
-                </span>{" "}
-                Withdrawals are typically processed within 1-3 business days.
-              </p>
+            
+            {/* Mobile: Accordion-style steps */}
+            <div className="space-y-3 md:space-y-4 text-gray-600">
+              <div className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xs font-bold">
+                  1
+                </div>
+                <div>
+                  <span className="font-medium text-gray-700 text-sm md:text-base">
+                    Select Withdrawal Method:
+                  </span>
+                  <p className="text-sm mt-1">Choose your preferred cryptocurrency option.</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xs font-bold">
+                  2
+                </div>
+                <div>
+                  <span className="font-medium text-gray-700 text-sm md:text-base">
+                    Enter Amount:
+                  </span>
+                  <p className="text-sm mt-1">Specify how much you wish to withdraw (minimum $50).</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xs font-bold">
+                  3
+                </div>
+                <div>
+                  <span className="font-medium text-gray-700 text-sm md:text-base">
+                    Provide Wallet Address:
+                  </span>
+                  <p className="text-sm mt-1">Enter your wallet information carefully.</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xs font-bold">
+                  4
+                </div>
+                <div>
+                  <span className="font-medium text-gray-700 text-sm md:text-base">
+                    Verification:
+                  </span>
+                  <p className="text-sm mt-1">Larger withdrawals may require additional verification.</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-3">
+                <div className="flex-shrink-0 w-6 h-6 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center text-xs font-bold">
+                  5
+                </div>
+                <div>
+                  <span className="font-medium text-gray-700 text-sm md:text-base">
+                    Processing Time:
+                  </span>
+                  <p className="text-sm mt-1">Withdrawals are typically processed within 1-3 business days.</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>

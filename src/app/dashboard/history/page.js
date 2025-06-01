@@ -200,75 +200,125 @@ export default function TransactionHistory() {
               </div>
             </div>
             
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      ID & Details
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Date
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Type
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Amount
-                    </th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Status
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredTransactions.length > 0 ? (
-                    filteredTransactions.map((transaction) => (
-                      <tr key={transaction._id} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm font-medium text-gray-900">TRX-{
-                            transaction._id.substring(transaction._id.length - 6).toUpperCase()
-                          }</div>
-                          <div className="text-sm text-gray-500">
-                            {transaction.details || transaction.method || 'Transaction'}
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="text-sm text-gray-700">{formatDate(transaction.date)}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center">
-                            {getTypeIcon(transaction.type)}
-                            <span className="ml-2 text-sm text-gray-700 capitalize">{transaction.type}</span>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className={`text-sm font-medium ${
-                            transaction.type === 'deposit' || transaction.type === 'profit' || transaction.type === 'payout'
-                              ? 'text-green-600' 
-                              : transaction.type === 'withdrawal' 
-                                ? 'text-red-600' 
-                                : 'text-indigo-600'
-                          }`}>
-                            {transaction.type === 'deposit' || transaction.type === 'profit' || transaction.type === 'payout' ? '+ ' : '- '}
-                            ${transaction.amount?.toLocaleString() || '0.00'}
-                          </div>
-                          <div className="text-xs text-gray-500">{transaction.method || 'System'}</div>
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          {getStatusBadge(transaction.status)}
+            {/* Desktop Table View */}
+            <div className="hidden lg:block">
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        ID & Details
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Date
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Type
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Amount
+                      </th>
+                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Status
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {filteredTransactions.length > 0 ? (
+                      filteredTransactions.map((transaction) => (
+                        <tr key={transaction._id} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm font-medium text-gray-900">TRX-{
+                              transaction._id.substring(transaction._id.length - 6).toUpperCase()
+                            }</div>
+                            <div className="text-sm text-gray-500">
+                              {transaction.details || transaction.method || 'Transaction'}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="text-sm text-gray-700">{formatDate(transaction.date)}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center">
+                              {getTypeIcon(transaction.type)}
+                              <span className="ml-2 text-sm text-gray-700 capitalize">{transaction.type}</span>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className={`text-sm font-medium ${
+                              transaction.type === 'deposit' || transaction.type === 'profit' || transaction.type === 'payout'
+                                ? 'text-green-600' 
+                                : transaction.type === 'withdrawal' 
+                                  ? 'text-red-600' 
+                                  : 'text-indigo-600'
+                            }`}>
+                              {transaction.type === 'deposit' || transaction.type === 'profit' || transaction.type === 'payout' ? '+ ' : '- '}
+                              ${transaction.amount?.toLocaleString() || '0.00'}
+                            </div>
+                            <div className="text-xs text-gray-500">{transaction.method || 'System'}</div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            {getStatusBadge(transaction.status)}
+                          </td>
+                        </tr>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="5" className="px-6 py-10 text-center text-gray-500">
+                          {transactions.length === 0 ? 'No transactions found' : 'No transactions match your filters'}
                         </td>
                       </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan="5" className="px-6 py-10 text-center text-gray-500">
-                        {transactions.length === 0 ? 'No transactions found' : 'No transactions match your filters'}
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="lg:hidden space-y-4">
+              {filteredTransactions.length > 0 ? (
+                filteredTransactions.map((transaction) => (
+                  <div key={transaction._id} className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center space-x-3">
+                        {getTypeIcon(transaction.type)}
+                        <div>
+                          <div className="text-sm font-medium text-gray-900">
+                            TRX-{transaction._id.substring(transaction._id.length - 6).toUpperCase()}
+                          </div>
+                          <div className="text-xs text-gray-500 capitalize">
+                            {transaction.type}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className={`text-sm font-medium ${
+                          transaction.type === 'deposit' || transaction.type === 'profit' || transaction.type === 'payout'
+                            ? 'text-green-600' 
+                            : transaction.type === 'withdrawal' 
+                              ? 'text-red-600' 
+                              : 'text-indigo-600'
+                        }`}>
+                          {transaction.type === 'deposit' || transaction.type === 'profit' || transaction.type === 'payout' ? '+ ' : '- '}
+                          ${transaction.amount?.toLocaleString() || '0.00'}
+                        </div>
+                        <div className="text-xs text-gray-500">{formatDate(transaction.date)}</div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="text-sm text-gray-600">
+                        {transaction.details || transaction.method || 'Transaction'}
+                      </div>
+                      {getStatusBadge(transaction.status)}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-10 text-gray-500">
+                  {transactions.length === 0 ? 'No transactions found' : 'No transactions match your filters'}
+                </div>
+              )}
             </div>
           </div>
         </div>

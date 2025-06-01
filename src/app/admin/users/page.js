@@ -155,7 +155,8 @@ export default function UsersManagement() {
           </div>
         </div>
 
-        <div className="bg-white rounded-xl shadow overflow-hidden">
+        {/* Desktop Table View */}
+        <div className="hidden lg:block bg-white rounded-lg shadow overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
@@ -170,7 +171,7 @@ export default function UsersManagement() {
                     Joined
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    investmentPlan
+                    Investment Plan
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Balance
@@ -210,11 +211,11 @@ export default function UsersManagement() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {user.investmentPlan ? (
-                          <span className="ml-2 bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded capitalize">
+                          <span className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded capitalize">
                             {user.investmentPlan}
                           </span>
                         ) : (
-                          <span className="ml-2 bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded capitalize">
+                          <span className="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded capitalize">
                             None
                           </span>
                         )}
@@ -225,7 +226,7 @@ export default function UsersManagement() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <div className="flex space-x-2">
                           <button
-                            className="bg-blue-100 px-2 py-0.5 text-blue-600 hover:text-blue-900"
+                            className="bg-blue-100 px-2 py-0.5 text-blue-600 hover:text-blue-900 rounded"
                             onClick={() =>
                               router.push(`/admin/users/${user.id}`)
                             }
@@ -249,6 +250,68 @@ export default function UsersManagement() {
               </tbody>
             </table>
           </div>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="lg:hidden space-y-4">
+          {filteredUsers.length > 0 ? (
+            filteredUsers.map((user) => (
+              <div key={user.id} className="bg-white rounded-lg shadow border border-gray-200 p-4">
+                <div className="flex items-start justify-between mb-3">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                      <User size={22} />
+                    </div>
+                    <div className="ml-3">
+                      <h3 className="text-sm font-medium text-gray-900">{user.name}</h3>
+                      <p className="text-xs text-gray-500">ID: {user.id.substring(0, 8)}...</p>
+                    </div>
+                  </div>
+                  <button
+                    className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm"
+                    onClick={() => router.push(`/admin/users/${user.id}`)}
+                  >
+                    View
+                  </button>
+                </div>
+                
+                <div className="space-y-2">
+                  <div className="flex items-center text-sm">
+                    <Mail className="text-gray-400 mr-2" size={16} />
+                    <span className="text-gray-600 truncate">{user.email}</span>
+                  </div>
+                  
+                  <div className="flex items-center text-sm">
+                    <Calendar className="text-gray-400 mr-2" size={16} />
+                    <span className="text-gray-600">Joined {user.joined}</span>
+                  </div>
+                  
+                  <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                    <div>
+                      <p className="text-xs text-gray-500">Investment Plan</p>
+                      {user.investmentPlan ? (
+                        <span className="bg-blue-100 text-blue-800 text-xs px-2 py-0.5 rounded capitalize">
+                          {user.investmentPlan}
+                        </span>
+                      ) : (
+                        <span className="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded">
+                          None
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs text-gray-500">Balance</p>
+                      <p className="text-sm font-medium text-gray-900">{user.balance}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="bg-white rounded-lg shadow border border-gray-200 p-8 text-center">
+              <p className="text-gray-500">No users found</p>
+            </div>
+          )}
         </div>
       </div>
       <AddUserModal

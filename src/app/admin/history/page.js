@@ -1,6 +1,6 @@
 "use client";
 import AdminLayout from "@/app/components/layouts/AdminDashboardLayout";
-import { Search, Filter, DollarSign, ArrowUp, ArrowDown, ChevronDown } from "lucide-react";
+import { Search, Filter, DollarSign, ArrowUp, ArrowDown, ChevronDown, User, Calendar, Hash } from "lucide-react";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { format } from 'date-fns';
@@ -155,6 +155,80 @@ export default function TransactionsHistory() {
     }).format(amount);
   };
 
+  // Transaction Card Component for Mobile View
+  const TransactionCard = ({ transaction }) => (
+    <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+      <div className="flex justify-between items-start mb-3">
+        <div className="flex items-center space-x-2">
+          <Hash size={16} className="text-gray-400" />
+          <span className="text-sm font-medium text-gray-900">
+            {transaction._id.substring(18, 24).toUpperCase()}
+          </span>
+        </div>
+        <StatusBadge status={transaction.status} />
+      </div>
+      
+      <div className="space-y-2 mb-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <User size={16} className="text-gray-400" />
+            <span className="text-sm text-gray-600">User:</span>
+          </div>
+          <span className="text-sm font-medium text-gray-900">
+            {transaction.userId?.name || 'N/A'}
+          </span>
+        </div>
+        
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-gray-600">Type:</span>
+          <TypeBadge type={transaction.type} />
+        </div>
+        
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-gray-600">Amount:</span>
+          <div className="flex items-center">
+            {transaction.type === "withdrawal" ? (
+              <ArrowUp className="text-red-500 mr-1" size={16} />
+            ) : (
+              <ArrowDown className="text-green-500 mr-1" size={16} />
+            )}
+            <span className="text-sm font-medium text-gray-900">
+              {formatCurrency(transaction.amount)}
+            </span>
+          </div>
+        </div>
+        
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Calendar size={16} className="text-gray-400" />
+            <span className="text-sm text-gray-600">Date:</span>
+          </div>
+          <span className="text-sm text-gray-500">
+            {formatDate(transaction.createdAt)}
+          </span>
+        </div>
+      </div>
+      
+      {(transaction.status === 'pending' && (transaction.type === 'deposit' || transaction.type === 'withdrawal')) && (
+        <div className="flex space-x-2 pt-3 border-t border-gray-100">
+          <button 
+            onClick={() => handleTransactionAction(transaction._id, 'approve')}
+            className="flex-1 bg-green-50 text-green-700 hover:bg-green-100 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+          >
+            Approve
+          </button>
+          <button 
+            onClick={() => handleTransactionAction(transaction._id, 'reject')}
+            className="flex-1 bg-red-50 text-red-700 hover:bg-red-100 px-3 py-2 rounded-lg text-sm font-medium transition-colors"
+          >
+            Reject
+          </button>
+        </div>
+      )}
+      
+    </div>
+  );
+
   return (
     <AdminLayout>
       <div className="space-y-6">
@@ -162,7 +236,7 @@ export default function TransactionsHistory() {
 
         {/* Filters */}
         <div className="bg-white p-4 rounded-xl shadow">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="flex flex-col space-y-4 md:flex-row md:items-center md:justify-between md:space-y-0 md:gap-4">
             <div className="relative flex-1">
               <input
                 type="text"
@@ -174,10 +248,10 @@ export default function TransactionsHistory() {
               <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
             </div>
             
-            <div className="flex items-center space-x-2">
-              <div>
+            <div className="flex flex-col space-y-3 md:flex-row md:items-center md:space-y-0 md:space-x-2">
+              <div className="w-full md:w-auto">
                 <select 
-                  className="bg-gray-100 border border-gray-300 text-gray-700 rounded-lg px-4 py-2"
+                  className="w-full md:w-auto bg-gray-100 border border-gray-300 text-gray-700 rounded-lg px-4 py-2"
                   value={typeFilter}
                   onChange={(e) => setTypeFilter(e.target.value)}
                 >
@@ -188,9 +262,9 @@ export default function TransactionsHistory() {
                   <option value="payout">Payouts</option>
                 </select>
               </div>
-              <div>
+              <div className="w-full md:w-auto">
                 <select 
-                  className="bg-gray-100 border border-gray-300 text-gray-700 rounded-lg px-4 py-2"
+                  className="w-full md:w-auto bg-gray-100 border border-gray-300 text-gray-700 rounded-lg px-4 py-2"
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
                 >
@@ -200,7 +274,7 @@ export default function TransactionsHistory() {
                   <option value="failed">Failed</option>
                 </select>
               </div>
-              <button className="flex items-center bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-200">
+              <button className="flex items-center justify-center w-full md:w-auto bg-gray-100 border border-gray-300 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-200">
                 <Filter size={16} className="mr-2" />
                 More Filters
               </button>
@@ -221,75 +295,87 @@ export default function TransactionsHistory() {
           </div>
         )}
 
-        {/* Transactions Table */}
+        {/* Transactions - Table for Desktop, Cards for Mobile */}
         {!loading && !error && (
-          <div className="bg-white rounded-xl shadow overflow-hidden">
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transaction ID</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {filteredTransactions.map((transaction) => (
-                    <tr key={transaction._id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {transaction._id.substring(18, 24).toUpperCase()}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {transaction.userId?.name || 'N/A'}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <TypeBadge type={transaction.type} />
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        <div className="flex items-center">
-                          {transaction.type === "withdrawal" ? (
-                            <ArrowUp className="text-red-500 mr-1" size={16} />
-                          ) : (
-                            <ArrowDown className="text-green-500 mr-1" size={16} />
-                          )}
-                          {formatCurrency(transaction.amount)}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {formatDate(transaction.createdAt)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <StatusBadge status={transaction.status} />
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 space-x-2">
-                        {(transaction.status === 'pending' && (transaction.type === 'deposit' || transaction.type === 'withdrawal')) && (
-                          <>
-                            <button 
-                              onClick={() => handleTransactionAction(transaction._id, 'approve')}
-                              className="text-green-600 hover:text-green-800"
-                            >
-                              Approve
-                            </button>
-                            <button 
-                              onClick={() => handleTransactionAction(transaction._id, 'reject')}
-                              className="text-red-600 hover:text-red-800"
-                            >
-                              Reject
-                            </button>
-                          </>
-                        )}
-                        <button className="text-blue-600 hover:text-blue-800">Details</button>
-                      </td>
+          <>
+            {/* Desktop Table View (hidden on mobile) */}
+            <div className="hidden lg:block bg-white rounded-xl shadow overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transaction ID</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {filteredTransactions.map((transaction) => (
+                      <tr key={transaction._id} className="hover:bg-gray-50">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          {transaction._id.substring(18, 24).toUpperCase()}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                          {transaction.userId?.name || 'N/A'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <TypeBadge type={transaction.type} />
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                          <div className="flex items-center">
+                            {transaction.type === "withdrawal" ? (
+                              <ArrowUp className="text-red-500 mr-1" size={16} />
+                            ) : (
+                              <ArrowDown className="text-green-500 mr-1" size={16} />
+                            )}
+                            {formatCurrency(transaction.amount)}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                          {formatDate(transaction.createdAt)}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap">
+                          <StatusBadge status={transaction.status} />
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 space-x-2">
+                          {(transaction.status === 'pending' && (transaction.type === 'deposit' || transaction.type === 'withdrawal')) && (
+                            <>
+                              <button 
+                                onClick={() => handleTransactionAction(transaction._id, 'approve')}
+                                className="text-green-600 hover:text-green-800"
+                              >
+                                Approve
+                              </button>
+                              <button 
+                                onClick={() => handleTransactionAction(transaction._id, 'reject')}
+                                className="text-red-600 hover:text-red-800"
+                              >
+                                Reject
+                              </button>
+                            </>
+                          )}
+                          
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
-            <div className="bg-gray-50 px-6 py-3 flex items-center justify-between border-t border-gray-200">
+
+            {/* Mobile Card View (hidden on desktop) */}
+            <div className="lg:hidden space-y-4">
+              {filteredTransactions.map((transaction) => (
+                <TransactionCard key={transaction._id} transaction={transaction} />
+              ))}
+            </div>
+
+            {/* Pagination */}
+            <div className="bg-white px-6 py-3 flex items-center justify-between border-t border-gray-200 rounded-xl shadow">
               <div className="flex-1 flex justify-between items-center">
                 <div className="text-sm text-gray-700">
                   Showing <span className="font-medium">{(pagination.page - 1) * pagination.limit + 1}</span> to{' '}
@@ -314,7 +400,7 @@ export default function TransactionsHistory() {
                 </div>
               </div>
             </div>
-          </div>
+          </>
         )}
       </div>
     </AdminLayout>

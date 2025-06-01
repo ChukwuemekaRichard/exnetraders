@@ -42,7 +42,7 @@ export default function UserDashboardLayout({ children }) {
     { name: "Investments", href: "/dashboard/investments", icon: TrendingUp },
     { name: "Transactions", href: "/dashboard/history", icon: History },
     { name: "Profile", href: "/dashboard/profile", icon: User },
-    { name: "Referall", href: "/dashboard/referrals", icon: Users },
+    // { name: "Referall", href: "/dashboard/referrals", icon: Users },
   ];
 
   useEffect(() => {
