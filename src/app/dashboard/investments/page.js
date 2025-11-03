@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import UserDashboardLayout from "@/app/components/layouts/UserDashboardLayout";
-import { MdArrowUpward, MdInfo, MdQueryStats, MdAttachMoney } from "react-icons/md";
+import { MdArrowUpward, MdInfo, MdQueryStats, MdAttachMoney, MdLockClock } from "react-icons/md";
 import { useUser } from "@/app/contexts/UserContext";
 import CustomLoader from "@/app/components/CustomLoader";
 
@@ -97,6 +97,7 @@ export default function Investments() {
           const dailyReturn = investment.amount * plan.dailyRate;
           const totalEarned = dailyReturn * daysPassed;
           const expectedTotalReturn = dailyReturn * totalDays;
+          const canWithdraw = daysPassed >= totalDays;
 
           return {
             id: investment._id,
@@ -111,6 +112,7 @@ export default function Investments() {
             totalDays,
             progress,
             status: investment.status,
+            canWithdraw,
           };
         });
 
@@ -181,6 +183,31 @@ export default function Investments() {
       );
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleWithdraw = async (investmentId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        `${SERVER_NAME}api/transactions/withdraw-investment`,
+        {
+          investmentId: investmentId,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (response.data.success) {
+        // Refresh investments list
+        router.refresh();
+      }
+    } catch (error) {
+      console.error("Withdrawal error:", error);
+      setError(
+        error.response?.data?.error || error.message || "Withdrawal failed"
+      );
     }
   };
 
@@ -320,6 +347,30 @@ export default function Investments() {
                         ></div>
                       </div>
                     </div>
+
+                    {/* Withdrawal Section */}
+                    <div className="mt-4 flex justify-between items-center">
+                      <div className="flex items-center text-sm text-gray-600">
+                        <MdLockClock className="mr-2 h-4 w-4" />
+                        {investment.canWithdraw ? (
+                          <span className="text-green-600 font-medium">
+                            Ready to withdraw
+                          </span>
+                        ) : (
+                          <span>
+                            Withdrawal available after {investment.totalDays} days
+                          </span>
+                        )}
+                      </div>
+                      {investment.canWithdraw && (
+                        <button
+                          onClick={() => handleWithdraw(investment.id)}
+                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                        >
+                          Withdraw ${(parseFloat(investment.amount) + parseFloat(investment.totalEarned)).toFixed(2)}
+                        </button>
+                      )}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -425,6 +476,10 @@ export default function Investments() {
                           ${(investmentAmount * selectedPlan.dailyRate * selectedPlan.duration || 0).toFixed(2)}
                         </span>
                       </p>
+                      <div className="mt-2 flex items-center text-sm text-amber-600">
+                        <MdLockClock className="mr-2 h-4 w-4" />
+                        <span>Withdrawal available after {selectedPlan.duration} days</span>
+                      </div>
                     </div>
                   </div>
 
@@ -509,9 +564,10 @@ export default function Investments() {
                           </p>
                         </div>
                       </div>
-                      <div className="mt-3 p-2 bg-green-50 rounded border border-green-100">
-                        <div className="text-xs text-green-800 text-center">
-                          Daily Payout
+                      <div className="mt-3 p-2 bg-amber-50 rounded border border-amber-100">
+                        <div className="text-xs text-amber-800 text-center flex items-center justify-center">
+                          <MdLockClock className="mr-1 h-3 w-3" />
+                          Withdraw after {plan.duration} days
                         </div>
                       </div>
                     </button>
