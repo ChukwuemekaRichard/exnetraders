@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import UserDashboardLayout from "@/app/components/layouts/UserDashboardLayout";
-import { MdArrowUpward, MdInfo, MdQueryStats } from "react-icons/md";
+import { MdArrowUpward, MdInfo, MdQueryStats, MdAttachMoney } from "react-icons/md";
 import { useUser } from "@/app/contexts/UserContext";
 import CustomLoader from "@/app/components/CustomLoader";
 
@@ -12,30 +12,30 @@ const SERVER_NAME = process.env.NEXT_PUBLIC_SERVER_NAME;
 const investmentPlans = {
   basic: {
     id: "basic",
-    dailyRate: 0.12 / 365,
-    label: "Basic (12% Annual)",
-    minAmount: 500,
+    dailyRate: 0.10, // 10% daily
+    label: "Basic (10% Daily)",
+    minAmount: 100,
     maxAmount: 1500,
     duration: 7, // in days
-    description: "Low risk with steady returns",
+    description: "Low risk with steady daily returns",
   },
   premium: {
     id: "premium",
-    dailyRate: 0.18 / 365,
-    label: "Premium (18% Annual)",
+    dailyRate: 0.20, // 20% daily
+    label: "Premium (20% Daily)",
     minAmount: 1500,
     maxAmount: 10000,
-    duration: 14,
-    description: "Balanced risk-reward ratio",
+    duration: 7,
+    description: "Balanced risk-reward with daily profits",
   },
   elite: {
     id: "elite",
-    dailyRate: 0.24 / 365,
-    label: "Elite (24% Annual)",
+    dailyRate: 0.50, // 50% daily
+    label: "Elite (50% Daily)",
     minAmount: 10000,
     maxAmount: 1000000,
-    duration: 30,
-    description: "Higher potential returns",
+    duration: 7,
+    description: "Higher potential daily returns",
   },
 };
 
@@ -49,8 +49,6 @@ export default function Investments() {
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-
-
   useEffect(() => {
     const fetchActiveInvestments = async () => {
       try {
@@ -59,61 +57,66 @@ export default function Investments() {
           router.push("/auth");
           return;
         }
-  
+
         const response = await axios.get(
           `${SERVER_NAME}api/transactions/investments`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-  
+
         // Check if response.data exists and is an array
         if (!Array.isArray(response?.data)) {
           throw new Error("Invalid response format");
         }
-  
+
         // If empty array, just set empty investments and return
         if (response.data.length === 0) {
           setActiveInvestments([]);
           setIsLoading(false);
           return;
         }
-  
-            // Format active investments with progress calculation
-            const formattedInvestments = response.data.map((investment) => {
-              const plan = investmentPlans[investment.investmentPlan];
-              const startDate = new Date(investment.createdAt);
-              const endDate = new Date(startDate);
-              endDate.setDate(startDate.getDate() + plan.duration);
-    
-              const totalDays = plan.duration;
-              const daysPassed = Math.floor(
-                (new Date() - startDate) / (1000 * 60 * 60 * 24)
-              );
-              const progress = Math.min(
-                Math.floor((daysPassed / totalDays) * 100),
-                100
-              );
-    
-              const expectedReturn =
-                investment.amount * (1 + plan.dailyRate * plan.duration);
-    
-              return {
-                id: investment._id,
-                plan: plan.label,
-                amount: investment.amount,
-                dateStarted: startDate.toLocaleDateString(),
-                dateEnding: endDate.toLocaleDateString(),
-                expectedReturn: expectedReturn.toFixed(2),
-                progress,
-                status: investment.status,
-              };
-            });
-  
+
+        // Format active investments with daily returns calculation
+        const formattedInvestments = response.data.map((investment) => {
+          const plan = investmentPlans[investment.investmentPlan];
+          const startDate = new Date(investment.createdAt);
+          const endDate = new Date(startDate);
+          endDate.setDate(startDate.getDate() + plan.duration);
+
+          const totalDays = plan.duration;
+          const daysPassed = Math.floor(
+            (new Date() - startDate) / (1000 * 60 * 60 * 24)
+          );
+          const progress = Math.min(
+            Math.floor((daysPassed / totalDays) * 100),
+            100
+          );
+
+          // Calculate daily return and total earned so far
+          const dailyReturn = investment.amount * plan.dailyRate;
+          const totalEarned = dailyReturn * daysPassed;
+          const expectedTotalReturn = dailyReturn * totalDays;
+
+          return {
+            id: investment._id,
+            plan: plan.label,
+            amount: investment.amount,
+            dailyReturn: dailyReturn.toFixed(2),
+            totalEarned: totalEarned.toFixed(2),
+            dateStarted: startDate.toLocaleDateString(),
+            dateEnding: endDate.toLocaleDateString(),
+            expectedTotalReturn: expectedTotalReturn.toFixed(2),
+            daysPassed,
+            totalDays,
+            progress,
+            status: investment.status,
+          };
+        });
+
         setActiveInvestments(formattedInvestments);
       } catch (error) {
         console.error("Error fetching investments:", error);
-        // More specific error message based on error type
         setError(
           error.response?.data?.error || 
           error.message || 
@@ -123,7 +126,7 @@ export default function Investments() {
         setIsLoading(false);
       }
     };
-  
+
     fetchActiveInvestments();
   }, [router]);
 
@@ -233,13 +236,13 @@ export default function Investments() {
                     className="bg-gray-50 rounded-lg p-5 border border-gray-200"
                   >
                     <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
-                      <div>
+                      <div className="flex-1">
                         <h3 className="text-lg font-medium text-gray-800">
                           {investment.plan}
                         </h3>
-                        <div className="mt-2 flex flex-col sm:flex-row sm:gap-6 text-sm text-gray-600">
+                        <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm text-gray-600">
                           <div>
-                            Amount:{" "}
+                            Investment:{" "}
                             <span className="text-gray-800 font-medium">
                               ${investment.amount.toLocaleString()}
                             </span>
@@ -256,25 +259,54 @@ export default function Investments() {
                               {investment.dateEnding}
                             </span>
                           </div>
+                          <div>
+                            Days:{" "}
+                            <span className="text-gray-800 font-medium">
+                              {investment.daysPassed}/{investment.totalDays}
+                            </span>
+                          </div>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-3">
                         <div className="text-right">
                           <div className="text-sm text-gray-600">
-                            Expected Return
+                            Daily Return
                           </div>
                           <div className="text-lg font-medium text-green-600">
-                            ${investment.expectedReturn}
+                            ${investment.dailyReturn}
                           </div>
                         </div>
-                        <MdArrowUpward className="text-green-600 h-6 w-6" />
+                        <MdAttachMoney className="text-green-600 h-6 w-6" />
                       </div>
                     </div>
 
+                    {/* Earnings Summary */}
+                    <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-white rounded-lg border border-gray-200">
+                      <div className="text-center">
+                        <div className="text-sm text-gray-600">Earned So Far</div>
+                        <div className="text-lg font-medium text-green-600">
+                          ${investment.totalEarned}
+                        </div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-sm text-gray-600">Daily Profit</div>
+                        <div className="text-lg font-medium text-blue-600">
+                          ${investment.dailyReturn}
+                        </div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-sm text-gray-600">Total Expected</div>
+                        <div className="text-lg font-medium text-purple-600">
+                          ${investment.expectedTotalReturn}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Progress Bar */}
                     <div className="mt-4">
                       <div className="flex justify-between text-sm text-gray-600 mb-1">
-                        <span>Progress</span>
+                        <span>Investment Progress</span>
                         <span>{investment.progress}%</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2.5">
@@ -298,7 +330,7 @@ export default function Investments() {
                   No Active Investments
                 </h3>
                 <p className="mt-1 text-gray-500">
-                  Start investing to grow your portfolio
+                  Start investing to earn daily returns
                 </p>
               </div>
             )}
@@ -354,19 +386,44 @@ export default function Investments() {
                     </p>
                   </div>
 
-                  <div className="flex items-start p-4 bg-indigo-50 rounded-lg border border-indigo-100">
-                    <MdInfo className="h-5 w-5 text-indigo-500 mt-0.5" />
+                  {/* Investment Summary */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-4 bg-indigo-50 rounded-lg border border-indigo-100">
+                    <div className="text-center">
+                      <div className="text-sm text-gray-600">Daily Return</div>
+                      <div className="text-lg font-medium text-green-600">
+                        ${(investmentAmount * selectedPlan.dailyRate || 0).toFixed(2)}
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-sm text-gray-600">Total Days</div>
+                      <div className="text-lg font-medium text-blue-600">
+                        {selectedPlan.duration}
+                      </div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-sm text-gray-600">Total Return</div>
+                      <div className="text-lg font-medium text-purple-600">
+                        ${(investmentAmount * selectedPlan.dailyRate * selectedPlan.duration || 0).toFixed(2)}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start p-4 bg-blue-50 rounded-lg border border-blue-100">
+                    <MdInfo className="h-5 w-5 text-blue-500 mt-0.5" />
                     <div className="ml-3">
                       <p className="text-sm text-gray-600">
                         You are about to invest in the {selectedPlan.label}{" "}
-                        plan. Make sure you have sufficient funds in your
-                        account.
+                        plan. You will earn{" "}
+                        <span className="font-medium text-green-600">
+                          ${(investmentAmount * selectedPlan.dailyRate || 0).toFixed(2)} daily
+                        </span>{" "}
+                        for {selectedPlan.duration} days.
                       </p>
                       <p className="text-sm text-gray-600 mt-2">
-                        {`Expected return: $${(
-                          investmentAmount *
-                          (1 + selectedPlan.dailyRate * selectedPlan.duration)
-                        ).toFixed(2)} after ${selectedPlan.duration} days`}
+                        Total expected return:{" "}
+                        <span className="font-medium text-purple-600">
+                          ${(investmentAmount * selectedPlan.dailyRate * selectedPlan.duration || 0).toFixed(2)}
+                        </span>
                       </p>
                     </div>
                   </div>
@@ -411,7 +468,7 @@ export default function Investments() {
             ) : (
               <div>
                 <p className="text-gray-600 mb-6">
-                  Select an investment plan that suits your financial goals:
+                  Select an investment plan to start earning daily returns:
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {Object.entries(investmentPlans).map(([key, plan]) => (
@@ -446,10 +503,15 @@ export default function Investments() {
                           </p>
                         </div>
                         <div>
-                          <span className="text-gray-500">Annual ROI</span>
+                          <span className="text-gray-500">Daily ROI</span>
                           <p className="text-green-600 font-medium">
-                            {plan.label.match(/\((.*?)\)/)[1]}
+                            {(plan.dailyRate * 100).toFixed(0)}%
                           </p>
+                        </div>
+                      </div>
+                      <div className="mt-3 p-2 bg-green-50 rounded border border-green-100">
+                        <div className="text-xs text-green-800 text-center">
+                          Daily Payout
                         </div>
                       </div>
                     </button>

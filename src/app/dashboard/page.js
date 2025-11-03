@@ -12,10 +12,37 @@ import {
 } from "react-icons/md";
 import UserDashboardLayout from "../components/layouts/UserDashboardLayout";
 import CustomLoader from "../components/CustomLoader";
-
 import TawkToChat from "../components/smartsup";
 
 const SERVER_NAME = process.env.NEXT_PUBLIC_SERVER_NAME;
+
+// Investment plans with daily rates (same as investments page)
+const investmentPlans = {
+  basic: {
+    id: "basic",
+    dailyRate: 0.10, // 10% daily
+    label: "Basic (10% Daily)",
+    minAmount: 100,
+    maxAmount: 1500,
+    duration: 7,
+  },
+  premium: {
+    id: "premium",
+    dailyRate: 0.20, // 20% daily
+    label: "Premium (20% Daily)",
+    minAmount: 1500,
+    maxAmount: 10000,
+    duration: 7,
+  },
+  elite: {
+    id: "elite",
+    dailyRate: 0.50, // 50% daily
+    label: "Elite (50% Daily)",
+    minAmount: 10000,
+    maxAmount: 1000000,
+    duration: 7,
+  },
+};
 
 export default function Dashboard() {
   const router = useRouter();
@@ -25,6 +52,8 @@ export default function Dashboard() {
     totalEarnings: 0,
     activeInvestments: 0,
     recentTransactions: [],
+    calculatedDailyReturns: 0, // New field for calculated daily returns
+    calculatedTotalEarnings: 0, // New field for total earnings including calculated returns
   });
   const [isLoading, setIsLoading] = useState(true);
 
@@ -50,8 +79,41 @@ export default function Dashboard() {
           }
         );
 
+        // Fetch active investments to calculate daily returns
+        const investmentsResponse = await axios.get(
+          `${SERVER_NAME}api/transactions/investments`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        // Calculate daily returns from active investments
+        let calculatedDailyReturns = 0;
+        let calculatedTotalEarnings = userResponse.data.totalEarnings || 0;
+
+        if (Array.isArray(investmentsResponse?.data)) {
+          investmentsResponse.data.forEach((investment) => {
+            if (investment.status === "active") {
+              const plan = investmentPlans[investment.investmentPlan];
+              if (plan) {
+                // Calculate daily return for this investment
+                const dailyReturn = investment.amount * plan.dailyRate;
+                calculatedDailyReturns += dailyReturn;
+
+                // Calculate total earned so far based on days passed
+                const startDate = new Date(investment.createdAt);
+                const daysPassed = Math.floor(
+                  (new Date() - startDate) / (1000 * 60 * 60 * 24)
+                );
+                const totalEarnedFromInvestment = dailyReturn * daysPassed;
+                calculatedTotalEarnings += totalEarnedFromInvestment;
+              }
+            }
+          });
+        }
+
         // Count active investments
-        const activeInvestments = userResponse.data.investmentPlan ? 1 : 0;
+        const activeInvestments = investmentsResponse.data?.length || 0;
 
         setDashboardData({
           balance: userResponse.data.balance || 0,
@@ -59,6 +121,8 @@ export default function Dashboard() {
           totalEarnings: userResponse.data.totalEarnings || 0,
           activeInvestments,
           recentTransactions: transactionsResponse.data || [],
+          calculatedDailyReturns,
+          calculatedTotalEarnings,
         });
       } catch (error) {
         console.error("Error fetching dashboard data:", error.message);
@@ -73,6 +137,7 @@ export default function Dashboard() {
 
     fetchDashboardData();
   }, []);
+
   // Helper function to safely format numbers
   const formatNumber = (num) => {
     return (num || 0).toLocaleString("en-US", {
@@ -153,14 +218,14 @@ export default function Dashboard() {
                     </dt>
                     <dd className="flex items-baseline">
                       <div className="text-2xl font-semibold text-gray-900">
-                        ${formatNumber(dashboardData.totalEarnings)}
+                        ${formatNumber(dashboardData.calculatedTotalEarnings)}
                       </div>
                       <div className="ml-2 flex items-baseline text-sm font-semibold text-green-600">
                         <MdArrowUpward className="self-center flex-shrink-0 h-5 w-5 text-green-500" />
                         <span className="sr-only">Increased by</span>
                         {dashboardData.investmentBalance > 0
                           ? (
-                              (dashboardData.totalEarnings /
+                              (dashboardData.calculatedTotalEarnings /
                                 dashboardData.investmentBalance) *
                               100
                             ).toFixed(2)
@@ -169,6 +234,14 @@ export default function Dashboard() {
                       </div>
                     </dd>
                   </dl>
+                  {/* Daily Returns Indicator */}
+                  {dashboardData.calculatedDailyReturns > 0 && (
+                    <div className="mt-1">
+                      <span className="text-xs text-green-600 bg-green-50 px-2 py-1 rounded">
+                        +${dashboardData.calculatedDailyReturns.toFixed(2)} daily
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -399,10 +472,20 @@ export default function Dashboard() {
                     <div>
                       <div className="flex justify-between mb-1">
                         <span className="text-sm font-medium text-gray-700">
+                          Daily Returns
+                        </span>
+                        <span className="text-sm font-medium text-green-600">
+                          +${dashboardData.calculatedDailyReturns.toFixed(2)}
+                        </span>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <span className="text-sm font-medium text-gray-700">
                           Total Earnings
                         </span>
                         <span className="text-sm font-medium text-gray-700">
-                          ${formatNumber(dashboardData.totalEarnings)}
+                          ${formatNumber(dashboardData.calculatedTotalEarnings)}
                         </span>
                       </div>
                     </div>
@@ -414,7 +497,7 @@ export default function Dashboard() {
                         <span className="text-sm font-medium text-gray-700">
                           {dashboardData.investmentBalance > 0
                             ? (
-                                (dashboardData.totalEarnings /
+                                (dashboardData.calculatedTotalEarnings /
                                   dashboardData.investmentBalance) *
                                 100
                               ).toFixed(2)
@@ -432,9 +515,11 @@ export default function Dashboard() {
                     Investment Status
                   </h4>
                   <div className="bg-blue-50 p-4 rounded-lg">
-                    <p className="text-blue-800">
-                      Your investment is currently active and earning daily
-                      returns.
+                    <p className="text-blue-800 mb-2">
+                      Your {dashboardData.activeInvestments} active investment(s) are currently earning daily returns.
+                    </p>
+                    <p className="text-blue-800 text-sm">
+                      Daily earnings are calculated in real-time and will be reflected in your total earnings.
                     </p>
                   </div>
                 </div>
