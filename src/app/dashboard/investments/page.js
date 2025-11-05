@@ -567,7 +567,7 @@ export default function Investments() {
                       <div className="mt-3 p-2 bg-amber-50 rounded border border-amber-100">
                         <div className="text-xs text-amber-800 text-center flex items-center justify-center">
                           <MdLockClock className="mr-1 h-3 w-3" />
-                          Withdraw after {plan.duration} days
+                          Withdraw after {plan.duration} day
                         </div>
                       </div>
                     </button>
