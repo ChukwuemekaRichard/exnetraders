@@ -21,21 +21,21 @@ const investmentPlans = {
   },
   premium: {
     id: "premium",
-    dailyRate: 0.20, // 20% daily
-    label: "Premium (20% Daily)",
-    minAmount: 1500,
+    dailyRate: 0.50, // 50% daily
+    label: "Premium (50% Daily)",
+    minAmount: 1000,
     maxAmount: 10000,
     duration: 7,
-    description: "Balanced risk-reward with daily profits",
+    description: "High returns with balanced risk",
   },
   elite: {
     id: "elite",
-    dailyRate: 0.50, // 50% daily
-    label: "Elite (50% Daily)",
-    minAmount: 10000,
+    dailyRate: 0.20, // 20% daily
+    label: "Elite (20% Daily)",
+    minAmount: 500,
     maxAmount: 1000000,
     duration: 7,
-    description: "Higher potential daily returns",
+    description: "Premium returns for serious investors",
   },
 };
 
