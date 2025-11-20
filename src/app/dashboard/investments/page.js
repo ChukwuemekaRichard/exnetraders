@@ -34,7 +34,7 @@ const investmentPlans = {
     label: "Elite (30% Daily)",
     minAmount: 10000,
     maxAmount: 1000000,
-    duration: 7,
+    duration: 3,
     description: "Premium returns for serious investors",
   },
 };
