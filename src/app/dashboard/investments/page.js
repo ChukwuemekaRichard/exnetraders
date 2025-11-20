@@ -85,9 +85,14 @@ export default function Investments() {
           endDate.setDate(startDate.getDate() + plan.duration);
 
           const totalDays = plan.duration;
-          const daysPassed = Math.floor(
-            (new Date() - startDate) / (1000 * 60 * 60 * 24)
+
+          // FIXED: Proper days passed calculation with cap at total duration
+          const now = new Date();
+          const daysPassed = Math.min(
+            Math.floor((now - startDate) / (1000 * 60 * 60 * 24)),
+            totalDays
           );
+
           const progress = Math.min(
             Math.floor((daysPassed / totalDays) * 100),
             100
@@ -289,9 +294,8 @@ export default function Investments() {
                           <div>
                             Days:{" "}
                             <span className="text-gray-800 font-medium">
-                              {Math.min(investment.daysPassed, 7)}/{investment.totalDays}
+                              {investment.daysPassed}/{investment.totalDays}
                             </span>
-
                           </div>
                         </div>
                       </div>
@@ -340,8 +344,8 @@ export default function Investments() {
                       <div className="w-full bg-gray-200 rounded-full h-2.5">
                         <div
                           className={`h-2.5 rounded-full ${investment.status === "active"
-                              ? "bg-indigo-500"
-                              : "bg-gray-400"
+                            ? "bg-indigo-500"
+                            : "bg-gray-400"
                             }`}
                           style={{ width: `${investment.progress}%` }}
                         ></div>
