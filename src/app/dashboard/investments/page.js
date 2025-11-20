@@ -120,8 +120,8 @@ export default function Investments() {
       } catch (error) {
         console.error("Error fetching investments:", error);
         setError(
-          error.response?.data?.error || 
-          error.message || 
+          error.response?.data?.error ||
+          error.message ||
           "Failed to load active investments"
         );
       } finally {
@@ -289,8 +289,9 @@ export default function Investments() {
                           <div>
                             Days:{" "}
                             <span className="text-gray-800 font-medium">
-                              {investment.daysPassed}/{investment.totalDays}
+                              {Math.min(investment.daysPassed, 7)}/{investment.totalDays}
                             </span>
+
                           </div>
                         </div>
                       </div>
@@ -338,11 +339,10 @@ export default function Investments() {
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2.5">
                         <div
-                          className={`h-2.5 rounded-full ${
-                            investment.status === "active"
+                          className={`h-2.5 rounded-full ${investment.status === "active"
                               ? "bg-indigo-500"
                               : "bg-gray-400"
-                          }`}
+                            }`}
                           style={{ width: `${investment.progress}%` }}
                         ></div>
                       </div>
