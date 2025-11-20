@@ -191,29 +191,9 @@ export default function Investments() {
     }
   };
 
-  const handleWithdraw = async (investmentId) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
-        `${SERVER_NAME}api/transactions/withdraw-investment`,
-        {
-          investmentId: investmentId,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
-      if (response.data.success) {
-        // Refresh investments list
-        router.refresh();
-      }
-    } catch (error) {
-      console.error("Withdrawal error:", error);
-      setError(
-        error.response?.data?.error || error.message || "Withdrawal failed"
-      );
-    }
+  const handleWithdraw = (investmentId) => {
+    // Navigate to withdrawal page instead of calling API
+    router.push("/withdraw");
   };
 
   if (isLoading) {
