@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import UserDashboardLayout from "@/app/components/layouts/UserDashboardLayout";
-import { MdArrowUpward, MdInfo, MdQueryStats, MdAttachMoney, MdLockClock } from "react-icons/md";
+import { MdArrowUpward, MdInfo, MdQueryStats, MdAttachMoney, MdLockClock, MdCheckCircle } from "react-icons/md";
 import { useUser } from "@/app/contexts/UserContext";
 import CustomLoader from "@/app/components/CustomLoader";
 
@@ -21,18 +21,18 @@ const investmentPlans = {
   },
   premium: {
     id: "premium",
-    dailyRate: 0.50, // 50% daily
-    label: "Premium (50% Daily)",
-    minAmount: 1000,
+    dailyRate: 0.12, // 12% daily
+    label: "Premium (12% Daily)",
+    minAmount: 1500,
     maxAmount: 10000,
     duration: 7,
     description: "High returns with balanced risk",
   },
   elite: {
     id: "elite",
-    dailyRate: 0.20, // 20% daily
-    label: "Elite (20% Daily)",
-    minAmount: 500,
+    dailyRate: 0.30, // 30% daily
+    label: "Elite (30% Daily)",
+    minAmount: 10000,
     maxAmount: 1000000,
     duration: 7,
     description: "Premium returns for serious investors",
@@ -48,6 +48,8 @@ export default function Investments() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [withdrawingInvestmentId, setWithdrawingInvestmentId] = useState(null);
 
   useEffect(() => {
     const fetchActiveInvestments = async () => {
@@ -191,9 +193,42 @@ export default function Investments() {
     }
   };
 
-  const handleWithdraw = (investmentId) => {
-    // Navigate to withdrawal page instead of calling API
-    router.push("/withdraw");
+  const handleWithdraw = async (investmentId) => {
+    try {
+      setWithdrawingInvestmentId(investmentId);
+      
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        `${SERVER_NAME}api/transactions/withdraw-investment`,
+        {
+          investmentId: investmentId,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (response.data.success) {
+        // Show success popup
+        setShowSuccessPopup(true);
+        
+        // Refresh investments list after a short delay
+        setTimeout(() => {
+          router.refresh();
+        }, 2000);
+      }
+    } catch (error) {
+      console.error("Withdrawal error:", error);
+      setError(
+        error.response?.data?.error || error.message || "Withdrawal failed"
+      );
+    } finally {
+      setWithdrawingInvestmentId(null);
+    }
+  };
+
+  const closeSuccessPopup = () => {
+    setShowSuccessPopup(false);
   };
 
   if (isLoading) {
@@ -208,6 +243,31 @@ export default function Investments() {
     <UserDashboardLayout>
       <div className="space-y-6">
         <h1 className="text-2xl font-semibold text-gray-800">Investments</h1>
+
+        {/* Success Popup */}
+        {showSuccessPopup && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+            <div className="bg-white rounded-xl p-6 max-w-md w-full text-center">
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                  <MdCheckCircle className="h-10 w-10 text-green-500" />
+                </div>
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                Withdrawal Successful!
+              </h3>
+              <p className="text-gray-600 mb-6">
+                Your investment funds have been successfully withdrawn and added to your account balance.
+              </p>
+              <button
+                onClick={closeSuccessPopup}
+                className="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-green-700 transition-colors"
+              >
+                Continue
+              </button>
+            </div>
+          </div>
+        )}
 
         {error && (
           <div className="bg-red-50 border-l-4 border-red-500 p-4">
@@ -349,9 +409,36 @@ export default function Investments() {
                       {investment.canWithdraw && (
                         <button
                           onClick={() => handleWithdraw(investment.id)}
-                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                          disabled={withdrawingInvestmentId === investment.id}
+                          className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          Withdraw ${(parseFloat(investment.amount) + parseFloat(investment.totalEarned)).toFixed(2)}
+                          {withdrawingInvestmentId === investment.id ? (
+                            <>
+                              <svg
+                                className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                              >
+                                <circle
+                                  className="opacity-25"
+                                  cx="12"
+                                  cy="12"
+                                  r="10"
+                                  stroke="currentColor"
+                                  strokeWidth="4"
+                                ></circle>
+                                <path
+                                  className="opacity-75"
+                                  fill="currentColor"
+                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                ></path>
+                              </svg>
+                              Processing...
+                            </>
+                          ) : (
+                            `Withdraw $${(parseFloat(investment.amount) + parseFloat(investment.totalEarned)).toFixed(2)}`
+                          )}
                         </button>
                       )}
                     </div>
