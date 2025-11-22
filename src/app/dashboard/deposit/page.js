@@ -13,6 +13,7 @@ import Solana from "@/public/Solana.png";
 import BNB from "@/public/bnb.jpg";
 import Litecoin from "@/public/litecoin.png";
 import Xrp from "@/public/xrp.jpg";
+import UsdtTron from "@/public/usdt.png";
 
 const SERVER_NAME = process.env.NEXT_PUBLIC_SERVER_NAME;
 
@@ -28,6 +29,14 @@ export default function DepositFunds() {
   const router = useRouter();
 
   const paymentMethods = [
+
+    {
+      id: "UsdtTron",
+      name: "Usdt(Tron)",
+      address: process.env.NEXT_PUBLIC_USDT,
+      icon:UsdtTron,
+    },
+    
     {
       id: "bitcoin",
       name: "Bitcoin",
