@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import AdminLayout from "@/app/components/layouts/AdminDashboardLayout";
-import { ChevronDown, ChevronUp, Search, Loader2, User, Calendar, DollarSign, TrendingUp, Award } from "lucide-react";
+import { ChevronDown, ChevronUp, Search, Loader2, User, Calendar, DollarSign, TrendingUp, Award, RefreshCw } from "lucide-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import CustomLoader from "@/app/components/CustomLoader";
@@ -17,54 +17,124 @@ export default function AdminInvestments() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Check if user is admin - using your localStorage key "userRole"
+  const isAdmin = () => {
+    if (typeof window === 'undefined') return false;
+    const role = localStorage.getItem("userRole");
+    return role === "admin";
+  };
+
+  // Redirect if not admin
+  useEffect(() => {
+    if (!isAdmin()) {
+      setError("Access denied: Admin privileges required");
+      setIsLoading(false);
+    } else {
+      fetchInvestments();
+    }
+  }, []);
 
   // Fetch investments data
   const fetchInvestments = async () => {
+    // Client-side admin check
+    if (!isAdmin()) {
+      setError("Access denied: Admin privileges required");
+      setIsLoading(false);
+      return;
+    }
+
     try {
       const token = localStorage.getItem("token");
+      const role = localStorage.getItem("userRole"); // Using your key
+      
       if (!token) {
         router.push("/auth");
         return;
       }
 
+      console.log("User role from localStorage:", role);
+
       const response = await axios.get(
         `${SERVER_NAME}api/transactions/admin/investments/active`,
-        { headers: { Authorization: `Bearer ${token}` } }
+        { 
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            'X-User-Role': role
+          } 
+        }
       );
 
-      console.log("API Response:", response.data); // Keep this for debugging
+      console.log("API Response:", response.data);
       setInvestments(response.data);
       setError(null);
     } catch (err) {
       console.error("Error fetching investments:", err);
-      setError(err.response?.data?.error || "Failed to load investments");
       if (err.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userRole");
         router.push("/auth");
+      } else if (err.response?.status === 403) {
+        setError("Access denied: Admin privileges required");
+      } else {
+        setError(err.response?.data?.error || "Failed to load investments");
       }
     } finally {
       setIsLoading(false);
+      setIsRefreshing(false);
     }
   };
 
   // Handle investment termination
   const handleTerminateInvestment = async (investmentId) => {
-    if (!confirm("Are you sure you want to terminate this investment?")) return;
+    // Client-side admin check
+    if (!isAdmin()) {
+      setError("Access denied: Admin privileges required");
+      return;
+    }
+
+    if (!confirm("Are you sure you want to terminate this investment? This action cannot be undone.")) return;
 
     setIsProcessing(true);
     try {
       const token = localStorage.getItem("token");
+      const role = localStorage.getItem("userRole"); // Using your key
+      
       await axios.put(
         `${SERVER_NAME}api/transactions/${investmentId}/terminate`,
         {},
-        { headers: { Authorization: `Bearer ${token}` } }
+        { 
+          headers: { 
+            Authorization: `Bearer ${token}`,
+            
+          } 
+        }
       );
+      
+      // Show success message
+      alert("Investment terminated successfully!");
       await fetchInvestments();
     } catch (err) {
       console.error("Error terminating investment:", err);
-      setError(err.response?.data?.error || "Failed to terminate investment");
+      if (err.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userRole");
+        router.push("/auth");
+      } else if (err.response?.status === 403) {
+        setError("Access denied: Admin privileges required");
+      } else {
+        setError(err.response?.data?.error || "Failed to terminate investment");
+      }
     } finally {
       setIsProcessing(false);
     }
+  };
+
+  // Handle refresh
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    fetchInvestments();
   };
 
   // Format currency
@@ -96,11 +166,6 @@ export default function AdminInvestments() {
         .includes(searchLower)
     );
   });
-
-  // Initial data fetch
-  useEffect(() => {
-    fetchInvestments();
-  }, []);
 
   // Toggle row expansion
   const toggleRowExpand = (id) => {
@@ -210,6 +275,10 @@ export default function AdminInvestments() {
                   <span className="font-medium text-gray-600">Start Date:</span>{" "}
                   {formatDate(investment.investmentStartDate)}
                 </p>
+                <p>
+                  <span className="font-medium text-gray-600">Total Earnings:</span>{" "}
+                  {formatCurrency(investment.totalEarnings || 0)}
+                </p>
               </div>
             </div>
             
@@ -225,6 +294,10 @@ export default function AdminInvestments() {
                 <p>
                   <span className="font-medium text-gray-600">Email:</span>{" "}
                   {investment.email || "N/A"}
+                </p>
+                <p>
+                  <span className="font-medium text-gray-600">User ID:</span>{" "}
+                  {investment.userId || "N/A"}
                 </p>
               </div>
             </div>
@@ -259,6 +332,29 @@ export default function AdminInvestments() {
     </div>
   );
 
+  // Show access denied if not admin
+  if (!isAdmin()) {
+    return (
+      <AdminLayout>
+        <div className="p-6">
+          <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Award className="h-8 w-8 text-red-600" />
+            </div>
+            <h2 className="text-red-800 font-semibold text-xl mb-2">Access Denied</h2>
+            <p className="text-red-600 mb-4">Admin privileges are required to access this page.</p>
+            <button 
+              onClick={() => router.push("/dashboard")}
+              className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors"
+            >
+              Go to Dashboard
+            </button>
+          </div>
+        </div>
+      </AdminLayout>
+    );
+  }
+
   if (isLoading) {
     return (
       <AdminLayout>
@@ -267,7 +363,7 @@ export default function AdminInvestments() {
     );
   }
 
-  if (error) {
+  if (error && !isAdmin()) {
     return (
       <AdminLayout>
         <div className="p-6 text-red-500">{error}</div>
@@ -279,15 +375,65 @@ export default function AdminInvestments() {
     <AdminLayout>
       <div className="space-y-6">
         <div className="flex flex-col space-y-4 md:flex-row md:justify-between md:items-center md:space-y-0">
-          <h1 className="text-2xl font-bold text-gray-800">
-            Investment Management
-          </h1>
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">
+              Investment Management
+            </h1>
+            <p className="text-gray-600 mt-1">
+              Manage all active user investments
+            </p>
+          </div>
           <button
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg w-full md:w-auto"
-            onClick={fetchInvestments}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg w-full md:w-auto flex items-center justify-center space-x-2 transition-colors"
+            onClick={handleRefresh}
+            disabled={isRefreshing}
           >
-            Refresh Investments
+            {isRefreshing ? (
+              <Loader2 className="animate-spin" size={16} />
+            ) : (
+              <RefreshCw size={16} />
+            )}
+            <span>Refresh Investments</span>
           </button>
+        </div>
+
+        {/* Stats Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-white p-4 rounded-lg border border-gray-200">
+            <div className="flex items-center">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <DollarSign className="h-6 w-6 text-blue-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Total Investments</p>
+                <p className="text-2xl font-bold text-gray-900">{investments.length}</p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white p-4 rounded-lg border border-gray-200">
+            <div className="flex items-center">
+              <div className="p-2 bg-green-100 rounded-lg">
+                <TrendingUp className="h-6 w-6 text-green-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Total Value</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {formatCurrency(investments.reduce((sum, inv) => sum + (inv.investmentBalance || 0), 0))}
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white p-4 rounded-lg border border-gray-200">
+            <div className="flex items-center">
+              <div className="p-2 bg-purple-100 rounded-lg">
+                <Award className="h-6 w-6 text-purple-600" />
+              </div>
+              <div className="ml-4">
+                <p className="text-sm font-medium text-gray-600">Your Role</p>
+                <p className="text-2xl font-bold text-gray-900">Admin</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Search */}
@@ -306,6 +452,30 @@ export default function AdminInvestments() {
             />
           </div>
         </div>
+
+        {error && (
+          <div className="bg-red-50 border-l-4 border-red-500 p-4">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg
+                  className="h-5 w-5 text-red-500"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <p className="text-sm text-red-700">{error}</p>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Desktop Table View (hidden on mobile) */}
         <div className="hidden lg:block bg-white p-6 rounded-xl shadow">
@@ -428,6 +598,12 @@ export default function AdminInvestments() {
                                     </span>{" "}
                                     {formatDate(investment.investmentStartDate)}
                                   </p>
+                                  <p className="text-sm">
+                                    <span className="font-medium text-gray-600">
+                                      Total Earnings:
+                                    </span>{" "}
+                                    {formatCurrency(investment.totalEarnings || 0)}
+                                  </p>
                                 </div>
                               </div>
 
@@ -447,6 +623,12 @@ export default function AdminInvestments() {
                                       Email:
                                     </span>{" "}
                                     {investment.email || "N/A"}
+                                  </p>
+                                  <p className="text-sm">
+                                    <span className="font-medium text-gray-600">
+                                      User ID:
+                                    </span>{" "}
+                                    {investment.userId || "N/A"}
                                   </p>
                                 </div>
                               </div>
