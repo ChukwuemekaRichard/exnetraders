@@ -90,14 +90,7 @@ export default function WithdrawalsManagement() {
         notes: `Withdrawal ${action}d via admin dashboard`,
       };
 
-      // Add transaction hash for approval
-      if (action === "approve") {
-        requestData.transactionHash = prompt("Enter the transaction hash:");
-        if (!requestData.transactionHash) {
-          setIsProcessing(false);
-          return;
-        }
-      }
+      
 
       await axios.put(
         `${SERVER_NAME}api/transactions${endpoint}`,
