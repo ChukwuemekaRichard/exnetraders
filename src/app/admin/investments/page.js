@@ -1,18 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import AdminLayout from "@/app/components/layouts/AdminDashboardLayout";
-import {
-  ChevronDown,
-  ChevronUp,
-  Search,
-  Loader2,
-  User,
-  Calendar,
-  DollarSign,
-  TrendingUp,
-  Award,
-  RefreshCw,
-} from "lucide-react";
+import { ChevronDown, ChevronUp, Search, Loader2, User, Calendar, DollarSign, TrendingUp, Award, RefreshCw } from "lucide-react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import CustomLoader from "@/app/components/CustomLoader";
@@ -29,10 +18,11 @@ export default function AdminInvestments() {
   const [error, setError] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [processingId, setProcessingId] = useState(null);
 
   // Check if user is admin - using your localStorage key "userRole"
   const isAdmin = () => {
-    if (typeof window === "undefined") return false;
+    if (typeof window === 'undefined') return false;
     const role = localStorage.getItem("userRole");
     return role === "admin";
   };
@@ -58,8 +48,8 @@ export default function AdminInvestments() {
 
     try {
       const token = localStorage.getItem("token");
-      const role = localStorage.getItem("userRole"); // Using your key
-
+      const role = localStorage.getItem("userRole");
+      
       if (!token) {
         router.push("/auth");
         return;
@@ -69,10 +59,10 @@ export default function AdminInvestments() {
 
       const response = await axios.get(
         `${SERVER_NAME}api/transactions/admin/investments/active`,
-        {
-          headers: {
+        { 
+          headers: { 
             Authorization: `Bearer ${token}`,
-          },
+          } 
         }
       );
 
@@ -96,146 +86,119 @@ export default function AdminInvestments() {
     }
   };
 
-  // Handle investment termination - UPDATED VERSION
-  const handleTerminateInvestment = async (transactionId) => {
-    // Client-side admin check
-    if (!isAdmin()) {
-      setError("Access denied: Admin privileges required");
+// Handle investment termination - UPDATED VERSION
+const handleTerminateInvestment = async (transactionId) => {
+  // Client-side admin check
+  if (!isAdmin()) {
+    setError("Access denied: Admin privileges required");
+    return;
+  }
+
+  if (!confirm("Are you sure you want to terminate this investment? This action cannot be undone.")) return;
+
+  setIsProcessing(true);
+  setProcessingId(transactionId);
+  try {
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("userRole");
+    
+    if (!token) {
+      router.push("/auth");
       return;
     }
 
-    if (
-      !confirm(
-        "Are you sure you want to terminate this investment? This action cannot be undone."
-      )
-    )
-      return;
+    console.log("Attempting to terminate investment with ID:", transactionId);
 
-    setIsProcessing(true);
-    setProcessingId(transactionId);
+    // Based on your withdrawals pattern, try these endpoints:
+    let response;
+    let success = false;
+
+    // Option 1: Following the same pattern as withdrawals
     try {
-      const token = localStorage.getItem("token");
-      const role = localStorage.getItem("userRole");
-
-      if (!token) {
-        router.push("/auth");
-        return;
-      }
-
-      console.log("Attempting to terminate investment with ID:", transactionId);
-
-      // Based on your withdrawals pattern, try these endpoints:
-      let response;
-      let success = false;
-
-      // Option 1: Following the same pattern as withdrawals
+      console.log("Trying endpoint: PUT /api/transactions/admin/investments/terminate");
+      response = await axios.put(
+        `${SERVER_NAME}api/transactions/admin/investments/terminate`,
+        { transactionId: transactionId },
+        { 
+          headers: { 
+            Authorization: `Bearer ${token}`,
+          } 
+        }
+      );
+      success = true;
+      console.log("Termination successful with admin investments endpoint");
+    } catch (err) {
+      console.log("Admin investments endpoint failed:", err.response?.data);
+      
+      // Option 2: Alternative pattern
       try {
-        console.log(
-          "Trying endpoint: PUT /api/transactions/admin/investments/terminate"
-        );
+        console.log("Trying endpoint: PUT /api/transactions/admin/terminate-investment");
         response = await axios.put(
-          `${SERVER_NAME}api/transactions/admin/investments/terminate`,
+          `${SERVER_NAME}api/transactions/admin/terminate-investment`,
           { transactionId: transactionId },
-          {
-            headers: {
+          { 
+            headers: { 
               Authorization: `Bearer ${token}`,
-            },
+            } 
           }
         );
         success = true;
-        console.log("Termination successful with admin investments endpoint");
-      } catch (err) {
-        console.log("Admin investments endpoint failed:", err.response?.data);
-
-        // Option 2: Alternative pattern
+        console.log("Termination successful with terminate-investment endpoint");
+      } catch (err2) {
+        console.log("Terminate-investment endpoint failed:", err2.response?.data);
+        
+        // Option 3: Direct termination endpoint
         try {
-          console.log(
-            "Trying endpoint: PUT /api/transactions/admin/terminate-investment"
-          );
-          response = await axios.put(
+          console.log("Trying endpoint: POST /api/transactions/admin/terminate-investment");
+          response = await axios.post(
             `${SERVER_NAME}api/transactions/admin/terminate-investment`,
             { transactionId: transactionId },
-            {
-              headers: {
+            { 
+              headers: { 
                 Authorization: `Bearer ${token}`,
-              },
+              } 
             }
           );
           success = true;
-          console.log(
-            "Termination successful with terminate-investment endpoint"
-          );
-        } catch (err2) {
-          console.log(
-            "Terminate-investment endpoint failed:",
-            err2.response?.data
-          );
-
-          // Option 3: Direct termination endpoint
-          try {
-            console.log(
-              "Trying endpoint: POST /api/transactions/admin/terminate-investment"
-            );
-            response = await axios.post(
-              `${SERVER_NAME}api/transactions/admin/terminate-investment`,
-              { transactionId: transactionId },
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            );
-            success = true;
-            console.log(
-              "Termination successful with POST terminate-investment endpoint"
-            );
-          } catch (err3) {
-            console.log(
-              "POST terminate-investment endpoint failed:",
-              err3.response?.data
-            );
-            throw err; // Throw the original error
-          }
+          console.log("Termination successful with POST terminate-investment endpoint");
+        } catch (err3) {
+          console.log("POST terminate-investment endpoint failed:", err3.response?.data);
+          throw err; // Throw the original error
         }
       }
-
-      if (success) {
-        // Show success message
-        alert("Investment terminated successfully!");
-
-        // Refresh the investments list
-        await fetchInvestments();
-      }
-    } catch (err) {
-      console.error("Error terminating investment:", err);
-      console.error("Error details:", err.response?.data);
-
-      if (err.response?.status === 401) {
-        localStorage.removeItem("token");
-        localStorage.removeItem("userRole");
-        router.push("/auth");
-      } else if (err.response?.status === 403) {
-        setError("Access denied: Admin privileges required");
-      } else if (err.response?.status === 404) {
-        setError(
-          `Investment not found. Please check:\n\n1. Investment ID: ${transactionId}\n2. Backend endpoint configuration\n3. Investment exists in database`
-        );
-      } else {
-        const errorMessage =
-          err.response?.data?.error ||
-          err.response?.data?.message ||
-          "Failed to terminate investment";
-        setError(`Error: ${errorMessage}`);
-
-        alert(
-          `Error: ${errorMessage}\n\nPlease check the console for details.`
-        );
-      }
-    } finally {
-      setIsProcessing(false);
-      setProcessingId(null);
     }
-  };
+
+    if (success) {
+      // Show success message
+      alert("Investment terminated successfully!");
+      
+      // Refresh the investments list
+      await fetchInvestments();
+    }
+    
+  } catch (err) {
+    console.error("Error terminating investment:", err);
+    console.error("Error details:", err.response?.data);
+    
+    if (err.response?.status === 401) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("userRole");
+      router.push("/auth");
+    } else if (err.response?.status === 403) {
+      setError("Access denied: Admin privileges required");
+    } else if (err.response?.status === 404) {
+      setError(`Investment not found. Please check:\n\n1. Investment ID: ${transactionId}\n2. Backend endpoint configuration\n3. Investment exists in database`);
+    } else {
+      const errorMessage = err.response?.data?.error || err.response?.data?.message || "Failed to terminate investment";
+      setError(`Error: ${errorMessage}`);
+      
+      alert(`Error: ${errorMessage}\n\nPlease check the console for details.`);
+    }
+  } finally {
+    setIsProcessing(false);
+    setProcessingId(null);
+  }
+};
 
   // Handle refresh
   const handleRefresh = () => {
@@ -328,7 +291,7 @@ export default function AdminInvestments() {
             investment.investmentPlan?.slice(1) || "N/A"}
         </span>
       </div>
-
+      
       <div className="space-y-3 mb-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
@@ -339,7 +302,7 @@ export default function AdminInvestments() {
             {formatCurrency(investment.investmentBalance)}
           </span>
         </div>
-
+        
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <TrendingUp size={16} className="text-gray-400" />
@@ -349,7 +312,7 @@ export default function AdminInvestments() {
             {formatCurrency(investment.totalEarnings || 0)}
           </span>
         </div>
-
+        
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <Calendar size={16} className="text-gray-400" />
@@ -382,14 +345,16 @@ export default function AdminInvestments() {
                   {formatDate(investment.investmentStartDate)}
                 </p>
                 <p>
-                  <span className="font-medium text-gray-600">
-                    Total Earnings:
-                  </span>{" "}
+                  <span className="font-medium text-gray-600">Total Earnings:</span>{" "}
                   {formatCurrency(investment.totalEarnings || 0)}
+                </p>
+                <p>
+                  <span className="font-medium text-gray-600">Investment ID:</span>{" "}
+                  <code className="text-xs bg-gray-100 p-1 rounded">{investment._id}</code>
                 </p>
               </div>
             </div>
-
+            
             <div>
               <h4 className="text-sm font-medium text-gray-700 mb-2">
                 User Details
@@ -412,7 +377,7 @@ export default function AdminInvestments() {
           </div>
         </div>
       )}
-
+      
       <div className="flex space-x-2 pt-3 border-t border-gray-100">
         <button
           onClick={() => toggleCardExpand(investment._id)}
@@ -426,11 +391,11 @@ export default function AdminInvestments() {
           )}
         </button>
         <button
-          className="flex-1 bg-red-50 text-red-700 hover:bg-red-100 px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center"
+          className="flex-1 bg-red-50 text-red-700 hover:bg-red-100 px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={() => handleTerminateInvestment(investment._id)}
-          disabled={isProcessing}
+          disabled={isProcessing && processingId === investment._id}
         >
-          {isProcessing ? (
+          {isProcessing && processingId === investment._id ? (
             <Loader2 className="animate-spin" size={16} />
           ) : (
             "Terminate"
@@ -449,13 +414,9 @@ export default function AdminInvestments() {
             <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Award className="h-8 w-8 text-red-600" />
             </div>
-            <h2 className="text-red-800 font-semibold text-xl mb-2">
-              Access Denied
-            </h2>
-            <p className="text-red-600 mb-4">
-              Admin privileges are required to access this page.
-            </p>
-            <button
+            <h2 className="text-red-800 font-semibold text-xl mb-2">Access Denied</h2>
+            <p className="text-red-600 mb-4">Admin privileges are required to access this page.</p>
+            <button 
               onClick={() => router.push("/dashboard")}
               className="bg-red-600 text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors"
             >
@@ -496,7 +457,7 @@ export default function AdminInvestments() {
             </p>
           </div>
           <button
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg w-full md:w-auto flex items-center justify-center space-x-2 transition-colors"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg w-full md:w-auto flex items-center justify-center space-x-2 transition-colors disabled:opacity-50"
             onClick={handleRefresh}
             disabled={isRefreshing}
           >
@@ -517,12 +478,8 @@ export default function AdminInvestments() {
                 <DollarSign className="h-6 w-6 text-blue-600" />
               </div>
               <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">
-                  Total Investments
-                </p>
-                <p className="text-2xl font-bold text-gray-900">
-                  {investments.length}
-                </p>
+                <p className="text-sm font-medium text-gray-600">Total Investments</p>
+                <p className="text-2xl font-bold text-gray-900">{investments.length}</p>
               </div>
             </div>
           </div>
@@ -534,12 +491,7 @@ export default function AdminInvestments() {
               <div className="ml-4">
                 <p className="text-sm font-medium text-gray-600">Total Value</p>
                 <p className="text-2xl font-bold text-gray-900">
-                  {formatCurrency(
-                    investments.reduce(
-                      (sum, inv) => sum + (inv.investmentBalance || 0),
-                      0
-                    )
-                  )}
+                  {formatCurrency(investments.reduce((sum, inv) => sum + (inv.investmentBalance || 0), 0))}
                 </p>
               </div>
             </div>
@@ -555,6 +507,16 @@ export default function AdminInvestments() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Debug Info - Remove in production */}
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-sm">
+          <p className="font-medium text-yellow-800">Debug Information:</p>
+          <p className="text-yellow-700">
+            Total investments: {investments.length} | 
+            First investment ID: {investments[0]?._id || 'None'} |
+            Server: {SERVER_NAME}
+          </p>
         </div>
 
         {/* Search */}
@@ -629,7 +591,7 @@ export default function AdminInvestments() {
                   filteredInvestments.map((investment) => (
                     <>
                       <tr
-                        key={`${investment.email}-${investment.investmentPlan}-${investment.investmentStartDate}`}
+                        key={investment._id}
                         className="hover:bg-gray-50"
                       >
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -675,13 +637,13 @@ export default function AdminInvestments() {
                               )}
                             </button>
                             <button
-                              className="text-red-600 hover:text-red-900"
+                              className="text-red-600 hover:text-red-900 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
                               onClick={() =>
                                 handleTerminateInvestment(investment._id)
                               }
-                              disabled={isProcessing}
+                              disabled={isProcessing && processingId === investment._id}
                             >
-                              {isProcessing ? (
+                              {isProcessing && processingId === investment._id ? (
                                 <Loader2 className="animate-spin" size={16} />
                               ) : (
                                 "Terminate"
@@ -723,9 +685,13 @@ export default function AdminInvestments() {
                                     <span className="font-medium text-gray-600">
                                       Total Earnings:
                                     </span>{" "}
-                                    {formatCurrency(
-                                      investment.totalEarnings || 0
-                                    )}
+                                    {formatCurrency(investment.totalEarnings || 0)}
+                                  </p>
+                                  <p className="text-sm">
+                                    <span className="font-medium text-gray-600">
+                                      Investment ID:
+                                    </span>{" "}
+                                    <code className="text-xs bg-gray-100 p-1 rounded">{investment._id}</code>
                                   </p>
                                 </div>
                               </div>
@@ -783,7 +749,7 @@ export default function AdminInvestments() {
           {filteredInvestments.length > 0 ? (
             filteredInvestments.map((investment) => (
               <InvestmentCard
-                key={`${investment.email}-${investment.investmentPlan}-${investment.investmentStartDate}`}
+                key={investment._id}
                 investment={investment}
               />
             ))
