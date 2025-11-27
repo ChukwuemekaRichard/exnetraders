@@ -79,49 +79,51 @@ export default function Investments() {
           return;
         }
 
-        // Format active investments with daily returns calculation
-        const formattedInvestments = response.data.map((investment) => {
-          const plan = investmentPlans[investment.investmentPlan];
-          const startDate = new Date(investment.createdAt);
-          const endDate = new Date(startDate);
-          endDate.setDate(startDate.getDate() + plan.duration);
+        // Filter out terminated investments and format active investments
+        const formattedInvestments = response.data
+          .filter(investment => investment.status !== "terminated") // Filter out terminated investments
+          .map((investment) => {
+            const plan = investmentPlans[investment.investmentPlan];
+            const startDate = new Date(investment.createdAt);
+            const endDate = new Date(startDate);
+            endDate.setDate(startDate.getDate() + plan.duration);
 
-          const totalDays = plan.duration;
+            const totalDays = plan.duration;
 
-          // FIXED: Proper days passed calculation with cap at total duration
-          const now = new Date();
-          const daysPassed = Math.min(
-            Math.floor((now - startDate) / (1000 * 60 * 60 * 24)),
-            totalDays
-          );
+            // FIXED: Proper days passed calculation with cap at total duration
+            const now = new Date();
+            const daysPassed = Math.min(
+              Math.floor((now - startDate) / (1000 * 60 * 60 * 24)),
+              totalDays
+            );
 
-          const progress = Math.min(
-            Math.floor((daysPassed / totalDays) * 100),
-            100
-          );
+            const progress = Math.min(
+              Math.floor((daysPassed / totalDays) * 100),
+              100
+            );
 
-          // Calculate daily return and total earned so far
-          const dailyReturn = investment.amount * plan.dailyRate;
-          const totalEarned = dailyReturn * daysPassed;
-          const expectedTotalReturn = dailyReturn * totalDays;
-          const canWithdraw = daysPassed >= totalDays;
+            // Calculate daily return and total earned so far
+            const dailyReturn = investment.amount * plan.dailyRate;
+            const totalEarned = dailyReturn * daysPassed;
+            const expectedTotalReturn = dailyReturn * totalDays;
+            const canWithdraw = daysPassed >= totalDays;
 
-          return {
-            id: investment._id,
-            plan: plan.label,
-            amount: investment.amount,
-            dailyReturn: dailyReturn.toFixed(2),
-            totalEarned: totalEarned.toFixed(2),
-            dateStarted: startDate.toLocaleDateString(),
-            dateEnding: endDate.toLocaleDateString(),
-            expectedTotalReturn: expectedTotalReturn.toFixed(2),
-            daysPassed,
-            totalDays,
-            progress,
-            status: investment.status,
-            canWithdraw,
-          };
-        });
+            return {
+              id: investment._id,
+              plan: plan.label,
+              amount: investment.amount,
+              dailyReturn: dailyReturn.toFixed(2),
+              totalEarned: totalEarned.toFixed(2),
+              dateStarted: startDate.toLocaleDateString(),
+              dateEnding: endDate.toLocaleDateString(),
+              expectedTotalReturn: expectedTotalReturn.toFixed(2),
+              daysPassed,
+              totalDays,
+              progress,
+              status: investment.status,
+              canWithdraw,
+            };
+          });
 
         setActiveInvestments(formattedInvestments);
       } catch (error) {
