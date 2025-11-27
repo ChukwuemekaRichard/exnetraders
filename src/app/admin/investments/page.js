@@ -86,119 +86,71 @@ export default function AdminInvestments() {
     }
   };
 
-// Handle investment termination - UPDATED VERSION
-const handleTerminateInvestment = async (transactionId) => {
-  // Client-side admin check
-  if (!isAdmin()) {
-    setError("Access denied: Admin privileges required");
-    return;
-  }
-
-  if (!confirm("Are you sure you want to terminate this investment? This action cannot be undone.")) return;
-
-  setIsProcessing(true);
-  setProcessingId(transactionId);
-  try {
-    const token = localStorage.getItem("token");
-    const role = localStorage.getItem("userRole");
-    
-    if (!token) {
-      router.push("/auth");
+  // Handle investment termination - CORRECTED VERSION
+  const handleTerminateInvestment = async (transactionId) => {
+    // Client-side admin check
+    if (!isAdmin()) {
+      setError("Access denied: Admin privileges required");
       return;
     }
 
-    console.log("Attempting to terminate investment with ID:", transactionId);
+    if (!confirm("Are you sure you want to terminate this investment? This action cannot be undone.")) return;
 
-    // Based on your withdrawals pattern, try these endpoints:
-    let response;
-    let success = false;
-
-    // Option 1: Following the same pattern as withdrawals
+    setIsProcessing(true);
+    setProcessingId(transactionId);
     try {
-      console.log("Trying endpoint: PUT /api/transactions/admin/investments/terminate");
-      response = await axios.put(
-        `${SERVER_NAME}api/transactions/admin/investments/terminate`,
-        { transactionId: transactionId },
+      const token = localStorage.getItem("token");
+      const role = localStorage.getItem("userRole");
+      
+      if (!token) {
+        router.push("/auth");
+        return;
+      }
+
+      console.log("Attempting to terminate investment with ID:", transactionId);
+
+      // Use the correct endpoint based on your backend route
+      const response = await axios.put(
+        `${SERVER_NAME}api/transactions/admin/investments/terminate/${transactionId}`,
+        {}, // Empty body since we're using URL parameter
         { 
           headers: { 
             Authorization: `Bearer ${token}`,
           } 
         }
       );
-      success = true;
-      console.log("Termination successful with admin investments endpoint");
-    } catch (err) {
-      console.log("Admin investments endpoint failed:", err.response?.data);
-      
-      // Option 2: Alternative pattern
-      try {
-        console.log("Trying endpoint: PUT /api/transactions/admin/terminate-investment");
-        response = await axios.put(
-          `${SERVER_NAME}api/transactions/admin/terminate-investment`,
-          { transactionId: transactionId },
-          { 
-            headers: { 
-              Authorization: `Bearer ${token}`,
-            } 
-          }
-        );
-        success = true;
-        console.log("Termination successful with terminate-investment endpoint");
-      } catch (err2) {
-        console.log("Terminate-investment endpoint failed:", err2.response?.data);
-        
-        // Option 3: Direct termination endpoint
-        try {
-          console.log("Trying endpoint: POST /api/transactions/admin/terminate-investment");
-          response = await axios.post(
-            `${SERVER_NAME}api/transactions/admin/terminate-investment`,
-            { transactionId: transactionId },
-            { 
-              headers: { 
-                Authorization: `Bearer ${token}`,
-              } 
-            }
-          );
-          success = true;
-          console.log("Termination successful with POST terminate-investment endpoint");
-        } catch (err3) {
-          console.log("POST terminate-investment endpoint failed:", err3.response?.data);
-          throw err; // Throw the original error
-        }
-      }
-    }
 
-    if (success) {
+      console.log("Termination successful:", response.data);
+      
       // Show success message
       alert("Investment terminated successfully!");
       
       // Refresh the investments list
       await fetchInvestments();
-    }
-    
-  } catch (err) {
-    console.error("Error terminating investment:", err);
-    console.error("Error details:", err.response?.data);
-    
-    if (err.response?.status === 401) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("userRole");
-      router.push("/auth");
-    } else if (err.response?.status === 403) {
-      setError("Access denied: Admin privileges required");
-    } else if (err.response?.status === 404) {
-      setError(`Investment not found. Please check:\n\n1. Investment ID: ${transactionId}\n2. Backend endpoint configuration\n3. Investment exists in database`);
-    } else {
-      const errorMessage = err.response?.data?.error || err.response?.data?.message || "Failed to terminate investment";
-      setError(`Error: ${errorMessage}`);
       
-      alert(`Error: ${errorMessage}\n\nPlease check the console for details.`);
+    } catch (err) {
+      console.error("Error terminating investment:", err);
+      console.error("Error details:", err.response?.data);
+      
+      if (err.response?.status === 401) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userRole");
+        router.push("/auth");
+      } else if (err.response?.status === 403) {
+        setError("Access denied: Admin privileges required");
+      } else if (err.response?.status === 404) {
+        setError(`Investment not found. Please check:\n\n1. Investment ID: ${transactionId}\n2. Backend endpoint configuration\n3. Investment exists in database`);
+      } else {
+        const errorMessage = err.response?.data?.error || err.response?.data?.message || "Failed to terminate investment";
+        setError(`Error: ${errorMessage}`);
+        
+        alert(`Error: ${errorMessage}\n\nPlease check the console for details.`);
+      }
+    } finally {
+      setIsProcessing(false);
+      setProcessingId(null);
     }
-  } finally {
-    setIsProcessing(false);
-    setProcessingId(null);
-  }
-};
+  };
 
   // Handle refresh
   const handleRefresh = () => {
@@ -507,16 +459,6 @@ const handleTerminateInvestment = async (transactionId) => {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Debug Info - Remove in production */}
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-sm">
-          <p className="font-medium text-yellow-800">Debug Information:</p>
-          <p className="text-yellow-700">
-            Total investments: {investments.length} | 
-            First investment ID: {investments[0]?._id || 'None'} |
-            Server: {SERVER_NAME}
-          </p>
         </div>
 
         {/* Search */}
